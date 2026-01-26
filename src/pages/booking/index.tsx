@@ -1,0 +1,232 @@
+import React, { useEffect, useState } from "react";
+import { Page, Header, Box, Text, Button, Icon, DatePicker, Select, useSnackbar, Modal } from "zmp-ui";
+import { TimeSlot, getAvailableSlots, createBooking, BookingType } from "../../services/booking-service";
+import { useNavigate, useLocation } from "react-router-dom";
+
+const BookingPage: React.FC = () => {
+  const navigate = useNavigate();
+  const location = useLocation();
+  const { openSnackbar } = useSnackbar();
+  
+  // State
+  const [date, setDate] = useState(new Date());
+  const [slots, setSlots] = useState<TimeSlot[]>([]);
+  const [selectedSlots, setSelectedSlots] = useState<string[]>([]);
+  const [bookingType, setBookingType] = useState<BookingType>('single');
+  const [loading, setLoading] = useState(false);
+  const [eventName, setEventName] = useState("");
+  const [showConfirm, setShowConfirm] = useState(false);
+
+  const clubName = (location.state as any)?.clubName || "Sân cầu lông Apolo";
+
+  useEffect(() => {
+    loadSlots();
+  }, [date]);
+
+  const loadSlots = async () => {
+    setLoading(true);
+    try {
+      const data = await getAvailableSlots(date.toISOString(), "court-1");
+      setSlots(data);
+      setSelectedSlots([]); // Reset selection on date change
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const toggleSlot = (slotId: string) => {
+    if (selectedSlots.includes(slotId)) {
+      setSelectedSlots(selectedSlots.filter(id => id !== slotId));
+    } else {
+      setSelectedSlots([...selectedSlots, slotId]);
+    }
+  };
+
+  const calculateTotal = () => {
+    return selectedSlots.reduce((sum, id) => {
+      const slot = slots.find(s => s.id === id);
+      return sum + (slot ? slot.price : 0);
+    }, 0);
+  };
+
+  const handleBooking = async () => {
+    setShowConfirm(false);
+    openSnackbar({ text: "Đang xử lý đặt sân...", type: "info" });
+    
+    try {
+      await createBooking({
+        userId: "user-1",
+        courtId: "court-1",
+        date: date.toISOString(),
+        slots: selectedSlots,
+        type: bookingType,
+        totalPrice: calculateTotal(),
+        eventName: bookingType === 'event' ? eventName : undefined
+      });
+      openSnackbar({ text: "Đặt sân thành công!", type: "success" });
+      navigate(-1);
+    } catch (error) {
+      openSnackbar({ text: "Có lỗi xảy ra, vui lòng thử lại", type: "error" });
+    }
+  };
+
+  const formatCurrency = (amount: number) => {
+    return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(amount);
+  };
+
+  return (
+    <Page className="bg-white pb-24">
+      <Header title="Đặt sân" />
+      
+      <Box className="p-4">
+        <Text.Title className="mb-4">{clubName}</Text.Title>
+        
+        {/* Date Picker */}
+        <div className="mb-6">
+          <Text className="font-medium mb-2">Chọn ngày</Text>
+          <DatePicker
+            mask
+            maskClosable
+            dateFormat="dd/mm/yyyy"
+            title="Chọn ngày đặt sân"
+            value={date}
+            onChange={(value, selectedDate) => {
+                if (selectedDate) setDate(selectedDate);
+            }} 
+          />
+        </div>
+
+        {/* Booking Type */}
+        <div className="mb-6">
+          <Text className="font-medium mb-2">Loại hình đặt</Text>
+          <div className="flex gap-2">
+            {[
+              { id: 'single', label: 'Cá nhân' },
+              { id: 'group', label: 'Nhóm' },
+              { id: 'event', label: 'Sự kiện' }
+            ].map((type) => (
+              <div
+                key={type.id}
+                onClick={() => setBookingType(type.id as BookingType)}
+                className={`px-4 py-2 rounded-full border text-sm font-medium cursor-pointer transition-colors ${
+                  bookingType === type.id 
+                    ? 'bg-primary text-white border-primary' 
+                    : 'bg-white text-gray-600 border-gray-300'
+                }`}
+              >
+                {type.label}
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Event Name Input */}
+        {bookingType === 'event' && (
+          <div className="mb-6">
+            <Text className="font-medium mb-2">Tên sự kiện</Text>
+            <input 
+              className="w-full p-2 border rounded-lg outline-none focus:border-primary"
+              placeholder="Nhập tên sự kiện..."
+              value={eventName}
+              onChange={(e) => setEventName(e.target.value)}
+            />
+          </div>
+        )}
+
+        {/* Time Slots Grid */}
+        <div className="mb-6">
+          <Text className="font-medium mb-2">Chọn khung giờ</Text>
+          {loading ? (
+            <div className="flex justify-center py-8">
+              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+            </div>
+          ) : (
+            <div className="grid grid-cols-4 gap-2">
+              {slots.map((slot) => {
+                const isSelected = selectedSlots.includes(slot.id);
+                return (
+                  <div
+                    key={slot.id}
+                    onClick={() => !slot.isBooked && toggleSlot(slot.id)}
+                    className={`
+                      p-2 rounded-lg text-center text-xs font-medium border transition-all
+                      ${slot.isBooked 
+                        ? 'bg-gray-100 text-gray-400 cursor-not-allowed border-transparent' 
+                        : isSelected
+                          ? 'bg-primary text-white border-primary shadow-md transform scale-105'
+                          : 'bg-white text-gray-700 border-gray-200 hover:border-primary cursor-pointer'
+                      }
+                    `}
+                  >
+                    {slot.time}
+                    <div className="mt-1 text-[10px] opacity-80">
+                      {slot.isBooked ? 'Đã đặt' : formatCurrency(slot.price)}
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          )}
+        </div>
+
+        {/* Legend */}
+        <div className="flex gap-4 justify-center text-xs text-gray-500 mb-8">
+          <div className="flex items-center gap-1">
+            <div className="w-3 h-3 rounded bg-white border border-gray-200"></div> Trống
+          </div>
+          <div className="flex items-center gap-1">
+            <div className="w-3 h-3 rounded bg-primary"></div> Đang chọn
+          </div>
+          <div className="flex items-center gap-1">
+            <div className="w-3 h-3 rounded bg-gray-100"></div> Đã đặt
+          </div>
+        </div>
+      </Box>
+
+      {/* Footer Actions */}
+      <div className="fixed bottom-0 left-0 right-0 p-4 bg-white border-t shadow-lg flex justify-between items-center z-50">
+        <div>
+          <Text className="text-gray-500 text-sm">Tổng tiền</Text>
+          <Text.Title className="text-primary text-xl font-bold">
+            {formatCurrency(calculateTotal())}
+          </Text.Title>
+        </div>
+        <Button 
+          disabled={selectedSlots.length === 0}
+          onClick={() => setShowConfirm(true)}
+          className="px-8"
+        >
+          Đặt ngay
+        </Button>
+      </div>
+
+      {/* Confirmation Modal */}
+      <Modal
+        visible={showConfirm}
+        title="Xác nhận đặt sân"
+        onClose={() => setShowConfirm(false)}
+        actions={[
+          {
+            text: "Hủy",
+            onClick: () => setShowConfirm(false),
+          },
+          {
+            text: "Xác nhận",
+            highLight: true,
+            onClick: handleBooking,
+          },
+        ]}
+      >
+        <div className="py-2">
+          <p>Bạn có chắc chắn muốn đặt <b>{selectedSlots.length}</b> khung giờ?</p>
+          <p className="mt-2 text-gray-600">Ngày: {date.toLocaleDateString('vi-VN')}</p>
+          <p className="text-gray-600">Tổng tiền: <span className="text-primary font-bold">{formatCurrency(calculateTotal())}</span></p>
+        </div>
+      </Modal>
+    </Page>
+  );
+};
+
+export default BookingPage;
