@@ -8,6 +8,8 @@ const BookingPage: React.FC = () => {
   const location = useLocation();
   const { openSnackbar } = useSnackbar();
   
+  const mode = (location.state as any)?.mode || "daily";
+
   // State
   const [date, setDate] = useState(new Date());
   const [slots, setSlots] = useState<TimeSlot[]>([]);
@@ -53,39 +55,55 @@ const BookingPage: React.FC = () => {
 
   const handleBooking = async () => {
     setShowConfirm(false);
-    openSnackbar({ text: "Đang xử lý đặt sân...", type: "info" });
-    
-    try {
-      await createBooking({
-        userId: "user-1",
-        courtId: "court-1",
-        date: date.toISOString(),
-        slots: selectedSlots,
-        type: bookingType,
-        totalPrice: calculateTotal(),
-        eventName: bookingType === 'event' ? eventName : undefined
-      });
-      openSnackbar({ text: "Đặt sân thành công!", type: "success" });
-      navigate(-1);
-    } catch (error) {
-      openSnackbar({ text: "Có lỗi xảy ra, vui lòng thử lại", type: "error" });
-    }
+    const summarySlots = selectedSlots.map((id) => {
+      const slot = slots.find((s) => s.id === id);
+      return {
+        court: "Sân 1",
+        time: slot ? slot.time : "",
+        price: slot ? slot.price : 0,
+      };
+    });
+    navigate("/booking-summary", {
+      state: {
+        summary: {
+          clubName,
+          date: date.toLocaleDateString("vi-VN"),
+          slots: summarySlots,
+          mode,
+          total: calculateTotal(),
+        },
+      },
+    });
   };
 
   const formatCurrency = (amount: number) => {
     return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(amount);
   };
 
+  const headerTitle =
+    mode === "daily"
+      ? "Đặt lịch theo ngày"
+      : mode === "fixed"
+      ? "Đặt lịch cố định"
+      : mode === "visual"
+      ? "Đặt lịch ngày trực quan"
+      : "Đặt lịch sự kiện";
+
   return (
-    <Page className="bg-white pb-24">
-      <Header title="Đặt sân" />
+    <Page className="bg-[#004f3a] pb-24 min-h-full">
+      <Header title={headerTitle} className="bg-[#004f3a] text-white" textColor="white" />
       
       <Box className="p-4">
-        <Text.Title className="mb-4">{clubName}</Text.Title>
+        <div className="bg-white rounded-2xl p-4 mb-4 shadow-md">
+          <Text.Title className="mb-1 text-[#0E6F4E]">{clubName}</Text.Title>
+          <Text size="xSmall" className="text-gray-500">
+            Chọn thời gian và khung giờ phù hợp để đặt sân.
+          </Text>
+        </div>
         
         {/* Date Picker */}
         <div className="mb-6">
-          <Text className="font-medium mb-2">Chọn ngày</Text>
+          <Text className="font-medium mb-2 text-white">Chọn ngày</Text>
           <DatePicker
             mask
             maskClosable
@@ -100,7 +118,7 @@ const BookingPage: React.FC = () => {
 
         {/* Booking Type */}
         <div className="mb-6">
-          <Text className="font-medium mb-2">Loại hình đặt</Text>
+          <Text className="font-medium mb-2 text-white">Loại hình đặt</Text>
           <div className="flex gap-2">
             {[
               { id: 'single', label: 'Cá nhân' },
@@ -137,7 +155,7 @@ const BookingPage: React.FC = () => {
 
         {/* Time Slots Grid */}
         <div className="mb-6">
-          <Text className="font-medium mb-2">Chọn khung giờ</Text>
+          <Text className="font-medium mb-2 text-white">Chọn khung giờ</Text>
           {loading ? (
             <div className="flex justify-center py-8">
               <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
@@ -155,8 +173,8 @@ const BookingPage: React.FC = () => {
                       ${slot.isBooked 
                         ? 'bg-gray-100 text-gray-400 cursor-not-allowed border-transparent' 
                         : isSelected
-                          ? 'bg-primary text-white border-primary shadow-md transform scale-105'
-                          : 'bg-white text-gray-700 border-gray-200 hover:border-primary cursor-pointer'
+                          ? 'bg-[#00b050] text-white border-[#00b050] shadow-md transform scale-105'
+                          : 'bg-[#00412f] text-white border-gray-500 hover:border-[#00b050] cursor-pointer'
                       }
                     `}
                   >
@@ -172,15 +190,15 @@ const BookingPage: React.FC = () => {
         </div>
 
         {/* Legend */}
-        <div className="flex gap-4 justify-center text-xs text-gray-500 mb-8">
+        <div className="flex gap-4 justify-center text-xs text-gray-100 mb-8">
           <div className="flex items-center gap-1">
-            <div className="w-3 h-3 rounded bg-white border border-gray-200"></div> Trống
+            <div className="w-3 h-3 rounded bg-[#00412f] border border-gray-400"></div> Trống
           </div>
           <div className="flex items-center gap-1">
-            <div className="w-3 h-3 rounded bg-primary"></div> Đang chọn
+            <div className="w-3 h-3 rounded bg-[#00b050]"></div> Đang chọn
           </div>
           <div className="flex items-center gap-1">
-            <div className="w-3 h-3 rounded bg-gray-100"></div> Đã đặt
+            <div className="w-3 h-3 rounded bg-gray-200"></div> Đã đặt
           </div>
         </div>
       </Box>

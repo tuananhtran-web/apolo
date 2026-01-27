@@ -15,6 +15,14 @@ import MapPage from "@/pages/map";
 import DiscoveryPage from "@/pages/discovery";
 import FeaturedPage from "@/pages/featured";
 import UserProfilePage from "@/pages/user/profile";
+import LoginPage from "@/pages/login";
+import RegisterPage from "@/pages/register";
+import QRScannerPage from "@/pages/qr-scanner";
+import AdminLoginPage from "@/pages/admin-login";
+import BookingPage from "@/pages/booking/index";
+import BookingSummaryPage from "@/pages/booking/summary";
+import NotificationListPage from "@/pages/notifications/index";
+import SearchAdvancedPage from "@/pages/search/index";
 
 const Layout = () => {
   return (
@@ -29,6 +37,14 @@ const Layout = () => {
               <Route path="/pages/discovery" element={<DiscoveryPage />}></Route>
               <Route path="/pages/featured" element={<FeaturedPage />}></Route>
               <Route path="/pages/user/profile" element={<UserProfilePage />}></Route>
+              <Route path="/login" element={<LoginPage />}></Route>
+              <Route path="/register" element={<RegisterPage />}></Route>
+              <Route path="/qr-scanner" element={<QRScannerPage />}></Route>
+              <Route path="/admin-login" element={<AdminLoginPage />}></Route>
+              <Route path="/booking" element={<BookingPage />}></Route>
+              <Route path="/booking-summary" element={<BookingSummaryPage />}></Route>
+              <Route path="/notifications" element={<NotificationListPage />}></Route>
+              <Route path="/search" element={<SearchAdvancedPage />}></Route>
             </AnimationRoutes>
           </div>
           <AppBottomNavigation />

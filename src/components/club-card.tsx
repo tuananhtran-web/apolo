@@ -1,31 +1,19 @@
 import React from 'react';
 import { Box, Text, Icon, useNavigate } from 'zmp-ui';
-
-export interface Club {
-  id: string;
-  name: string;
-  image: string;
-  rating: number;
-  distance: string;
-  openTime: string;
-  address: string;
-  type?: 'daily' | 'event';
-  categoryId?: string;
-  distanceKm?: number;
-  tags?: string[];
-}
+import { Club } from '../mock/data';
 
 interface ClubCardProps {
   club: Club;
+  onClick?: (club: Club) => void;
 }
 
-export const ClubCard: React.FC<ClubCardProps> = ({ club }) => {
+export const ClubCard: React.FC<ClubCardProps> = ({ club, onClick }) => {
   const navigate = useNavigate();
 
   return (
     <Box 
       className="bg-white rounded-xl mb-4 overflow-hidden shadow-sm active:scale-95 transition-transform duration-200"
-      onClick={() => console.log('Card clicked')}
+      onClick={() => onClick?.(club)}
     >
       {/* Image Header */}
       <div className="relative h-40 w-full">
@@ -52,10 +40,10 @@ export const ClubCard: React.FC<ClubCardProps> = ({ club }) => {
 
         {/* Action Icons */}
         <div className="absolute top-3 right-3 flex flex-col gap-2">
-           <div className="w-8 h-8 rounded-full bg-white flex items-center justify-center shadow-md active:bg-gray-100">
+           <div className="w-8 h-8 rounded-full bg-white flex items-center justify-center shadow-md active:bg-gray-100" onClick={(e) => { e.stopPropagation(); console.log("Like") }}>
              <Icon icon="zi-heart" size={20} className="text-gray-600" />
            </div>
-           <div className="w-8 h-8 rounded-full bg-white flex items-center justify-center shadow-md active:bg-gray-100">
+           <div className="w-8 h-8 rounded-full bg-white flex items-center justify-center shadow-md active:bg-gray-100" onClick={(e) => { e.stopPropagation(); console.log("Share") }}>
              <Icon icon="zi-share" size={20} className="text-gray-600" />
            </div>
         </div>
@@ -84,7 +72,7 @@ export const ClubCard: React.FC<ClubCardProps> = ({ club }) => {
              className="bg-[#F5B400] text-white font-bold text-xs py-2 px-4 rounded-lg shadow-sm active:bg-yellow-600 active:scale-95 transition-all duration-200 flex-shrink-0 ml-2"
              onClick={(e) => {
                e.stopPropagation();
-               console.log('Book clicked');
+               onClick?.(club);
              }}
            >
              ĐẶT LỊCH

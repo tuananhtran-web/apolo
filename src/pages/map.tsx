@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { Page, Box, Input, Icon, Text } from 'zmp-ui';
+import { Page, Icon, Text } from 'zmp-ui';
+import { useNavigate } from "react-router-dom";
 
 interface MapMarkerProps {
   x: number;
@@ -31,11 +32,16 @@ const MapMarker: React.FC<MapMarkerProps> = ({ x, y, type, label, isUser }) => {
     case 'tennis': color = 'bg-orange-500'; icon = 'zi-more-grid'; break;
   }
 
+  const navigate = useNavigate();
+
   return (
     <div 
       className="absolute flex flex-col items-center transform -translate-x-1/2 -translate-y-full cursor-pointer active:scale-110 transition-transform duration-200"
       style={{ top: `${y}%`, left: `${x}%` }}
-      onClick={() => console.log(`Clicked marker: ${type}`)}
+      onClick={() => {
+        const clubName = label || "Sân thể thao";
+        navigate("/booking", { state: { mode: "daily", clubName } });
+      }}
     >
       {label && (
         <div className="mb-1 bg-white px-2 py-1 rounded-full shadow-md whitespace-nowrap z-10">

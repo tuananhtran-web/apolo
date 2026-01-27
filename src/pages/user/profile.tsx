@@ -1,8 +1,9 @@
 import React from "react";
-import { Page, Text, Icon, Button, Box, useNavigate } from "zmp-ui";
+import { Page, Text, Icon, Button, Box, useNavigate, useSnackbar } from "zmp-ui";
 
 const UserProfilePage: React.FC = () => {
   const navigate = useNavigate();
+  const { openSnackbar } = useSnackbar();
 
   const MenuItem = ({ icon, title, subtitle, onClick, isNew }: { icon: string, title: string, subtitle?: string, onClick?: () => void, isNew?: boolean }) => (
     <div 
@@ -54,13 +55,13 @@ const UserProfilePage: React.FC = () => {
              <Button 
                className="flex-1 bg-green-600 hover:bg-green-700 active:bg-green-800 text-white font-bold rounded-lg py-2"
                size="medium"
-               onClick={() => navigate('/pages/login')}
+               onClick={() => navigate('/login')}
              >
                Đăng nhập
              </Button>
              <button 
                className="flex-1 bg-white border border-gray-300 text-gray-700 font-bold rounded-lg py-2 active:bg-gray-50 transition-colors"
-               onClick={() => console.log('Register')}
+               onClick={() => navigate('/register')}
              >
                Đăng kí
              </button>
@@ -76,7 +77,7 @@ const UserProfilePage: React.FC = () => {
            <MenuItem 
              icon="zi-calendar" 
              title="Danh sách lịch đã đặt" 
-             onClick={() => console.log('History')} 
+             onClick={() => navigate('/notifications')} 
            />
         </div>
       </div>
@@ -88,19 +89,23 @@ const UserProfilePage: React.FC = () => {
            <MenuItem 
              icon="zi-info-circle" 
              title="Thông tin phiên bản: 2.8.5" 
+             onClick={() => openSnackbar({ text: "Phiên bản hiện tại là mới nhất", type: "info" })}
            />
            <MenuItem 
              icon="zi-shield-solid" 
              title="Điều khoản và chính sách" 
+             onClick={() => openSnackbar({ text: "Chức năng đang phát triển", type: "info" })}
            />
            <MenuItem 
              icon="zi-star" 
              title="Ứng dụng có gì mới" 
              isNew
+             onClick={() => openSnackbar({ text: "Chưa có cập nhật mới", type: "info" })}
            />
            <MenuItem 
              icon="zi-globe" 
              title="Ngôn ngữ - Tiếng Việt" 
+             onClick={() => openSnackbar({ text: "Chỉ hỗ trợ Tiếng Việt", type: "info" })}
            />
         </div>
       </div>
