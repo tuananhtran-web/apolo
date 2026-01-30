@@ -23,6 +23,7 @@ import BookingPage from "@/pages/booking/index";
 import VisualBookingPage from "@/pages/booking/visual";
 import ServiceSelectionPage from "@/pages/booking/services";
 import BookingSummaryPage from "@/pages/booking/summary";
+import PaymentPage from "@/pages/payment/index";
 import NotificationListPage from "@/pages/notifications/index";
 import SearchAdvancedPage from "@/pages/search/index";
 
