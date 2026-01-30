@@ -301,7 +301,7 @@ export const ClubDetailSheet: React.FC<ClubDetailSheetProps> = ({ club, visible,
              disabled={selectedCourts.length === 0}
              onClick={handleBooking}
            >
-              ĐẶT NGAY ({selectedCourts.length})
+              ĐẶT LỊCH ({selectedCourts.length})
            </Button>
         </div>
 
