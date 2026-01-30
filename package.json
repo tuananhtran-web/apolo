@@ -20,6 +20,7 @@
     "deploy": "zmp deploy"
   },
   "dependencies": {
+    "@supabase/supabase-js": "^2.93.3",
     "firebase": "^12.8.0",
     "jotai": "^2.12.1",
     "qrcode.react": "^4.2.0",

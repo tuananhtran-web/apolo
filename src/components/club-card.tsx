@@ -28,11 +28,11 @@ export const ClubCard: React.FC<ClubCardProps> = ({ club, onClick }) => {
              <Icon icon="zi-star-solid" className="text-yellow-400" size={12} />
              <Text size="xxSmall" className="font-bold">{club.rating}</Text>
           </div>
-          <div className="bg-green-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-full shadow-sm">
+          <div className="bg-[#283b91] text-white text-[10px] font-bold px-2 py-0.5 rounded-full shadow-sm">
              Đơn ngày
           </div>
           {club.type === 'event' && (
-             <div className="bg-purple-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-full shadow-sm">
+             <div className="bg-[#d32829] text-white text-[10px] font-bold px-2 py-0.5 rounded-full shadow-sm">
                Sự kiện
              </div>
           )}
@@ -59,7 +59,7 @@ export const ClubCard: React.FC<ClubCardProps> = ({ club, onClick }) => {
               <div>
                  <Text.Title size="small" className="font-bold">{club.name}</Text.Title>
                  <Text size="xxSmall" className="text-gray-500 line-clamp-2 mt-0.5">
-                    <span className="text-red-500 font-medium">({club.distance})</span> {club.address}
+                    <span className="text-[#d32829] font-medium">({club.distance})</span> {club.address}
                  </Text>
                  <div className="flex items-center text-gray-500 mt-1">
                     <Icon icon="zi-clock-1" size={12} />
@@ -69,7 +69,7 @@ export const ClubCard: React.FC<ClubCardProps> = ({ club, onClick }) => {
            </div>
 
            <button 
-             className="bg-[#F5B400] text-white font-bold text-xs py-2 px-4 rounded-lg shadow-sm active:bg-yellow-600 active:scale-95 transition-all duration-200 flex-shrink-0 ml-2"
+             className="bg-[#d32829] text-white font-bold text-xs py-2 px-4 rounded-lg shadow-sm active:bg-[#b91c1c] active:scale-95 transition-all duration-200 flex-shrink-0 ml-2"
              onClick={(e) => {
                e.stopPropagation();
                onClick?.(club);

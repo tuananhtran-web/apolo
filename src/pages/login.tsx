@@ -42,20 +42,20 @@ const LoginPage: React.FC = () => {
   };
 
   return (
-    <Page className="bg-[#0E6F4E] flex flex-col h-full relative">
+    <Page className="bg-[#283b91] flex flex-col h-full relative">
        <Header title="Đăng nhập" showBackIcon={true} textColor="white" className="bg-transparent shadow-none" />
        
        <div className="flex-1 bg-white rounded-t-[30px] mt-4 overflow-hidden flex flex-col">
           {/* Tabs */}
           <div className="flex border-b border-gray-100">
              <div 
-               className={`flex-1 py-4 text-center font-bold text-sm cursor-pointer ${activeTab === 'phone' ? 'text-[#0E6F4E] border-b-2 border-[#0E6F4E]' : 'text-gray-400'}`}
+               className={`flex-1 py-4 text-center font-bold text-sm cursor-pointer ${activeTab === 'phone' ? 'text-[#283b91] border-b-2 border-[#283b91]' : 'text-gray-400'}`}
                onClick={() => setActiveTab('phone')}
              >
                 Số điện thoại
              </div>
              <div 
-               className={`flex-1 py-4 text-center font-bold text-sm cursor-pointer ${activeTab === 'email' ? 'text-[#0E6F4E] border-b-2 border-[#0E6F4E]' : 'text-gray-400'}`}
+               className={`flex-1 py-4 text-center font-bold text-sm cursor-pointer ${activeTab === 'email' ? 'text-[#283b91] border-b-2 border-[#283b91]' : 'text-gray-400'}`}
                onClick={() => setActiveTab('email')}
              >
                 Email
@@ -67,7 +67,7 @@ const LoginPage: React.FC = () => {
              <div className="space-y-4 mb-6">
                 {activeTab === 'phone' ? (
                   <div>
-                    <Text.Title size="small" className="font-bold mb-2 text-green-800">Số điện thoại của bạn?</Text.Title>
+                    <Text.Title size="small" className="font-bold mb-2 text-[#1a2b70]">Số điện thoại của bạn?</Text.Title>
                     <div className="flex items-center border border-gray-200 rounded-lg p-1">
                       <div className="flex items-center px-3 border-r border-gray-200">
                           <img src="https://upload.wikimedia.org/wikipedia/commons/2/21/Flag_of_Vietnam.svg" alt="VN" className="w-5 h-5 mr-1" />
@@ -85,7 +85,7 @@ const LoginPage: React.FC = () => {
                   </div>
                 ) : (
                   <div>
-                    <Text.Title size="small" className="font-bold mb-2 text-green-800">Email của bạn?</Text.Title>
+                    <Text.Title size="small" className="font-bold mb-2 text-[#1a2b70]">Email của bạn?</Text.Title>
                     <Input 
                       type="text"
                       placeholder="Nhập email của bạn"
@@ -121,7 +121,7 @@ const LoginPage: React.FC = () => {
              <Button 
                 fullWidth 
                 size="large"
-                className="bg-[#0E6F4E] hover:bg-green-800 rounded-lg font-bold text-lg mb-4 shadow-lg"
+                className="bg-[#283b91] hover:bg-[#1a2b70] rounded-lg font-bold text-lg mb-4 shadow-lg"
                 onClick={handleLoginTap}
              >
                 ĐĂNG NHẬP
@@ -129,11 +129,11 @@ const LoginPage: React.FC = () => {
 
              {/* FaceID Button */}
              <div 
-               className="border border-green-200 rounded-lg py-3 flex items-center justify-center gap-2 cursor-pointer active:bg-green-50 mb-6"
+               className="border border-gray-200 rounded-lg py-3 flex items-center justify-center gap-2 cursor-pointer active:bg-blue-50 mb-6"
                onClick={() => console.log("Biometric login")}
              >
-                <Icon icon="zi-qrline" className="text-[#0E6F4E]" />
-                <Text className="font-bold text-[#0E6F4E] text-sm">Đăng nhập với sinh trắc học</Text>
+                <Icon icon="zi-qrline" className="text-[#283b91]" />
+                <Text className="font-bold text-[#283b91] text-sm">Đăng nhập với sinh trắc học</Text>
              </div>
 
              {/* Links */}

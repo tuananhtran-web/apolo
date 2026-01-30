@@ -61,13 +61,13 @@ const QRScannerPage: React.FC = () => {
         <div className="absolute inset-0 bg-black/50 z-0">
           <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-64 h-64 border-2 border-white/80 rounded-lg bg-transparent shadow-[0_0_0_9999px_rgba(0,0,0,0.5)]">
             {/* Corner Markers */}
-            <div className="absolute top-0 left-0 w-6 h-6 border-t-4 border-l-4 border-[#0E6F4E] -mt-1 -ml-1"></div>
-            <div className="absolute top-0 right-0 w-6 h-6 border-t-4 border-r-4 border-[#0E6F4E] -mt-1 -mr-1"></div>
-            <div className="absolute bottom-0 left-0 w-6 h-6 border-b-4 border-l-4 border-[#0E6F4E] -mb-1 -ml-1"></div>
-            <div className="absolute bottom-0 right-0 w-6 h-6 border-b-4 border-r-4 border-[#0E6F4E] -mb-1 -mr-1"></div>
+            <div className="absolute top-0 left-0 w-6 h-6 border-t-4 border-l-4 border-[#283b91] -mt-1 -ml-1"></div>
+            <div className="absolute top-0 right-0 w-6 h-6 border-t-4 border-r-4 border-[#283b91] -mt-1 -mr-1"></div>
+            <div className="absolute bottom-0 left-0 w-6 h-6 border-b-4 border-l-4 border-[#283b91] -mb-1 -ml-1"></div>
+            <div className="absolute bottom-0 right-0 w-6 h-6 border-b-4 border-r-4 border-[#283b91] -mb-1 -mr-1"></div>
             
             {/* Scanning Line Animation */}
-            <div className="absolute top-0 left-0 w-full h-0.5 bg-[#0E6F4E] animate-[scan_2s_infinite]"></div>
+            <div className="absolute top-0 left-0 w-full h-0.5 bg-[#283b91] animate-[scan_2s_infinite]"></div>
           </div>
         </div>
 
@@ -91,7 +91,7 @@ const QRScannerPage: React.FC = () => {
           </div>
           
           {/* Mock Trigger for Demo */}
-          <Button onClick={handleScan} className="mt-8 bg-[#0E6F4E]">
+          <Button onClick={handleScan} className="mt-8 bg-[#283b91]">
             Giả lập Quét thành công
           </Button>
         </div>

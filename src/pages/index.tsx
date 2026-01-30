@@ -140,7 +140,7 @@ const HomePage: React.FC = () => {
   return (
     <Page className="bg-gray-100 pb-20 relative overflow-y-auto h-full">
       {/* Custom Header Background */}
-      <div className="absolute top-0 left-0 right-0 h-48 bg-gradient-to-b from-[#0E6F4E] to-[#158f66] rounded-b-[30px] z-0 overflow-hidden">
+      <div className="absolute top-0 left-0 right-0 h-48 bg-gradient-to-b from-[#283b91] to-[#158f66] rounded-b-[30px] z-0 overflow-hidden">
          {/* Decorative circles */}
          <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full -mr-10 -mt-10"></div>
          <div className="absolute bottom-0 left-0 w-24 h-24 bg-white/5 rounded-full -ml-10 -mb-5"></div>
@@ -163,7 +163,7 @@ const HomePage: React.FC = () => {
            </div>
            <div className="flex gap-2">
               <button 
-                className="bg-white text-[#0E6F4E] font-bold text-xs py-1.5 px-4 rounded-lg shadow-md active:bg-gray-100 active:scale-95 transition-all duration-200"
+                className="bg-white text-[#283b91] font-bold text-xs py-1.5 px-4 rounded-lg shadow-md active:bg-gray-100 active:scale-95 transition-all duration-200"
                 onClick={() => navigate('/login')}
               >
                 Đăng nhập
@@ -190,12 +190,12 @@ const HomePage: React.FC = () => {
               />
               <Icon 
                 icon="zi-qrline" 
-                className="text-gray-600 ml-2 cursor-pointer active:text-[#0E6F4E]" 
+                className="text-gray-600 ml-2 cursor-pointer active:text-[#283b91]" 
                 onClick={() => navigate('/qr-scanner')}
               />
-              <Icon icon="zi-search" className="text-[#0E6F4E] ml-3" size={24} />
+              <Icon icon="zi-search" className="text-[#283b91] ml-3" size={24} />
            </div>
-           <div className="w-11 h-11 bg-white rounded-xl shadow-lg flex items-center justify-center text-[#0E6F4E] active:scale-95 transition-transform" onClick={() => openSnackbar({ text: "Chức năng Yêu thích đang phát triển", type: "info" })}>
+           <div className="w-11 h-11 bg-white rounded-xl shadow-lg flex items-center justify-center text-[#283b91] active:scale-95 transition-transform" onClick={() => openSnackbar({ text: "Chức năng Yêu thích đang phát triển", type: "info" })}>
              <Icon icon="zi-heart" />
           </div>
        </div>
@@ -205,7 +205,7 @@ const HomePage: React.FC = () => {
           {['Cầu lông gần tôi', 'Pickleball gần tôi', 'Xé vé gần tôi'].map((pill, idx) => (
             <div 
               key={idx}
-              className={`whitespace-nowrap px-4 py-2 rounded-lg font-bold text-xs shadow-sm active:scale-95 transition-all cursor-pointer border ${activePill === pill ? 'bg-[#0E6F4E] text-white border-[#0E6F4E]' : 'bg-white text-gray-600 border-gray-100'}`}
+              className={`whitespace-nowrap px-4 py-2 rounded-lg font-bold text-xs shadow-sm active:scale-95 transition-all cursor-pointer border ${activePill === pill ? 'bg-[#283b91] text-white border-[#283b91]' : 'bg-white text-gray-600 border-gray-100'}`}
               onClick={() => handlePillClick(pill)}
             >
               {pill}
@@ -222,10 +222,10 @@ const HomePage: React.FC = () => {
                  className="flex flex-col items-center gap-1 min-w-[60px] cursor-pointer active:scale-95 transition-transform duration-200"
                  onClick={() => handleCategoryClick(cat.id)}
                >
-                  <div className={`w-12 h-12 rounded-full ${cat.bg} flex items-center justify-center shadow-sm border ${selectedCategory === cat.id ? 'border-[#0E6F4E] border-2' : 'border-gray-100'}`}>
+                  <div className={`w-12 h-12 rounded-full ${cat.bg} flex items-center justify-center shadow-sm border ${selectedCategory === cat.id ? 'border-[#283b91] border-2' : 'border-gray-100'}`}>
                      <Icon icon={cat.icon} className={cat.color} size={24} />
                   </div>
-                  <Text size="xxSmall" className={`font-medium ${selectedCategory === cat.id ? 'text-[#0E6F4E] font-bold' : 'text-gray-600'}`}>{cat.name}</Text>
+                  <Text size="xxSmall" className={`font-medium ${selectedCategory === cat.id ? 'text-[#283b91] font-bold' : 'text-gray-600'}`}>{cat.name}</Text>
                </div>
              ))}
           </div>
@@ -239,7 +239,7 @@ const HomePage: React.FC = () => {
           </div>
           <Icon
             icon="zi-tune"
-            className="text-[#0E6F4E]"
+            className="text-[#283b91]"
             size={24}
             onClick={() => navigate("/search")}
           />

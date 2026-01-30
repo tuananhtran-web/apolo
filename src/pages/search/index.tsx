@@ -76,12 +76,12 @@ const SearchAdvancedPage: React.FC = () => {
     provinces.find((p) => p.id === province)?.districts || [];
 
   return (
-    <Page className="bg-[#f1fff6] min-h-full pb-24">
-      <Header title="Tìm kiếm" showBackIcon textColor="white" className="bg-[#0E6F4E]" />
+    <Page className="bg-[#eef2ff] min-h-full pb-24">
+      <Header title="Tìm kiếm" showBackIcon textColor="white" className="bg-[#283b91]" />
 
       <Box className="p-4">
         <div className="flex justify-between items-center mb-2">
-          <Text.Title className="text-[#0E6F4E]">Môn thể thao</Text.Title>
+          <Text.Title className="text-[#283b91]">Môn thể thao</Text.Title>
           <Button
             size="small"
             className="bg-white border border-gray-200 text-gray-700 rounded-full px-3 py-1"
@@ -99,7 +99,7 @@ const SearchAdvancedPage: React.FC = () => {
                 onClick={() => toggleSport(cat.id)}
                 className={`px-3 py-1.5 rounded-full border text-sm font-medium cursor-pointer transition-all ${
                   active
-                    ? "bg-[#0E6F4E] text-white border-[#0E6F4E]"
+                    ? "bg-[#283b91] text-white border-[#283b91]"
                     : `bg-white text-gray-700 border-gray-200`
                 }`}
               >
@@ -109,7 +109,7 @@ const SearchAdvancedPage: React.FC = () => {
           })}
         </div>
 
-        <Text.Title className="text-[#0E6F4E] mb-2">Loại lịch</Text.Title>
+        <Text.Title className="text-[#283b91] mb-2">Loại lịch</Text.Title>
         <div className="flex gap-2 mb-6">
           {[
             { id: "daily", label: "Sân trống" },
@@ -121,7 +121,7 @@ const SearchAdvancedPage: React.FC = () => {
               onClick={() => setBookingType(bookingType === t.id ? null : (t.id as any))}
               className={`px-4 py-2 rounded-lg border text-sm font-medium cursor-pointer transition-colors ${
                 bookingType === t.id
-                  ? "bg-[#0E6F4E] text-white border-[#0E6F4E]"
+                  ? "bg-[#283b91] text-white border-[#283b91]"
                   : "bg-white text-gray-700 border-gray-200"
               }`}
             >
@@ -130,7 +130,7 @@ const SearchAdvancedPage: React.FC = () => {
           ))}
         </div>
 
-        <Text.Title className="text-[#0E6F4E] mb-2">Khu vực</Text.Title>
+        <Text.Title className="text-[#283b91] mb-2">Khu vực</Text.Title>
         <div className="flex items-center gap-2 mb-6">
           <select
             className="flex-1 p-2 border rounded-lg bg-white"
@@ -158,7 +158,7 @@ const SearchAdvancedPage: React.FC = () => {
           </Button>
         </div>
 
-        <Text.Title className="text-[#0E6F4E] mb-2">Khoảng cách</Text.Title>
+        <Text.Title className="text-[#283b91] mb-2">Khoảng cách</Text.Title>
         <div className="flex items-center gap-3 mb-6">
           <input
             type="range"
@@ -171,7 +171,7 @@ const SearchAdvancedPage: React.FC = () => {
           <Text>{distance} km</Text>
         </div>
 
-        <Text.Title className="text-[#0E6F4E] mb-2">Từ khoá</Text.Title>
+        <Text.Title className="text-[#283b91] mb-2">Từ khoá</Text.Title>
         <div className="flex flex-wrap gap-2 mb-10">
           {quickKeywords.map((kw) => {
             const active = keywords.includes(kw);
@@ -181,7 +181,7 @@ const SearchAdvancedPage: React.FC = () => {
                 onClick={() => toggleKeyword(kw)}
                 className={`px-3 py-1.5 rounded-lg border text-sm font-medium cursor-pointer transition-all ${
                   active
-                    ? "bg-[#0E6F4E] text-white border-[#0E6F4E]"
+                    ? "bg-[#283b91] text-white border-[#283b91]"
                     : "bg-white text-gray-700 border-gray-200"
                 }`}
               >
@@ -193,7 +193,7 @@ const SearchAdvancedPage: React.FC = () => {
       </Box>
 
       <div className="fixed bottom-0 left-0 right-0 p-4 bg-transparent">
-        <Button fullWidth className="bg-[#0E6F4E] rounded-lg py-3 font-bold" onClick={performSearch}>
+        <Button fullWidth className="bg-[#283b91] rounded-lg py-3 font-bold" onClick={performSearch}>
           Tìm kiếm
         </Button>
       </div>

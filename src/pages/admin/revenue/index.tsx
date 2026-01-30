@@ -3,7 +3,7 @@ import { Page, Header, Box, Text, DatePicker, Button, Select } from "zmp-ui";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell, Legend } from 'recharts';
 import { getRevenueReport, RevenueData } from "../../../services/report-service";
 
-const COLORS = ['#0E6F4E', '#F5B400', '#E53935', '#0088FE'];
+const COLORS = ['#283b91', '#d32829', '#E53935', '#0088FE'];
 
 const RevenuePage: React.FC = () => {
   const [startDate, setStartDate] = useState(new Date(new Date().setDate(new Date().getDate() - 7)));
@@ -119,7 +119,7 @@ const RevenuePage: React.FC = () => {
                     formatter={(value: number) => formatCurrency(value)}
                     labelStyle={{color: '#333'}}
                   />
-                  <Bar dataKey="revenue" fill="#0E6F4E" radius={[4, 4, 0, 0]} />
+                  <Bar dataKey="revenue" fill="#283b91" radius={[4, 4, 0, 0]} />
                 </BarChart>
               ) : (
                 <PieChart>

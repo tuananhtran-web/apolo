@@ -8,12 +8,12 @@ const RegisterPage: React.FC = () => {
 
   return (
     <Page className="bg-white flex flex-col h-full">
-      <Header title="Đăng ký" showBackIcon textColor="white" className="bg-[#0E6F4E]" />
+      <Header title="Đăng ký" showBackIcon textColor="white" className="bg-[#283b91]" />
       
       <div className="flex-1 overflow-y-auto p-4 pb-20">
         {/* Phone Input */}
         <div className="mb-4">
-          <Text.Title size="small" className="font-bold mb-2 text-green-800">Số điện thoại của bạn?</Text.Title>
+          <Text.Title size="small" className="font-bold mb-2 text-[#283b91]">Số điện thoại của bạn?</Text.Title>
           <div className="flex items-center border border-gray-200 rounded-lg p-1">
              <div className="flex items-center px-3 border-r border-gray-200">
                 <img src="https://upload.wikimedia.org/wikipedia/commons/2/21/Flag_of_Vietnam.svg" alt="VN" className="w-5 h-5 mr-1" />
@@ -30,7 +30,7 @@ const RegisterPage: React.FC = () => {
 
         {/* Email Input */}
         <div className="mb-4">
-          <Text.Title size="small" className="font-bold mb-2 text-green-800">Email của bạn?</Text.Title>
+          <Text.Title size="small" className="font-bold mb-2 text-[#283b91]">Email của bạn?</Text.Title>
           <Input 
              type="text"
              placeholder="Nhập email của bạn (*)"
@@ -41,7 +41,7 @@ const RegisterPage: React.FC = () => {
 
         {/* Full Name Input */}
         <div className="mb-4">
-          <Text.Title size="small" className="font-bold mb-2 text-green-800">Tên đầy đủ</Text.Title>
+          <Text.Title size="small" className="font-bold mb-2 text-[#283b91]">Tên đầy đủ</Text.Title>
           <Input 
              type="text"
              placeholder="Nhập họ và tên"
@@ -52,7 +52,7 @@ const RegisterPage: React.FC = () => {
 
         {/* Password Input */}
         <div className="mb-4">
-          <Text.Title size="small" className="font-bold mb-2 text-green-800">Mật khẩu (*)</Text.Title>
+          <Text.Title size="small" className="font-bold mb-2 text-[#283b91]">Mật khẩu (*)</Text.Title>
           <div className="relative">
              <Input 
                type={showPassword ? "text" : "password"}
@@ -90,7 +90,7 @@ const RegisterPage: React.FC = () => {
         <Button 
           fullWidth 
           size="large"
-          className="bg-[#0E6F4E] hover:bg-green-800 rounded-lg font-bold text-lg mb-6"
+          className="bg-[#283b91] hover:bg-blue-800 rounded-lg font-bold text-lg mb-6"
           onClick={() => navigate("/")}
         >
           ĐĂNG KÝ
@@ -99,7 +99,7 @@ const RegisterPage: React.FC = () => {
         {/* Login Link */}
         <div className="flex justify-center items-center gap-1">
            <Text size="small" className="text-gray-500">Bạn đã có tài khoản?</Text>
-           <Text size="small" className="font-bold text-green-800 cursor-pointer" onClick={() => navigate("/login")}>Đăng nhập</Text>
+           <Text size="small" className="font-bold text-[#283b91] cursor-pointer" onClick={() => navigate("/login")}>Đăng nhập</Text>
         </div>
 
       </div>

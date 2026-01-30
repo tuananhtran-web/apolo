@@ -20,6 +20,8 @@ import RegisterPage from "@/pages/register";
 import QRScannerPage from "@/pages/qr-scanner";
 import AdminLoginPage from "@/pages/admin-login";
 import BookingPage from "@/pages/booking/index";
+import VisualBookingPage from "@/pages/booking/visual";
+import ServiceSelectionPage from "@/pages/booking/services";
 import BookingSummaryPage from "@/pages/booking/summary";
 import NotificationListPage from "@/pages/notifications/index";
 import SearchAdvancedPage from "@/pages/search/index";
@@ -42,6 +44,8 @@ const Layout = () => {
               <Route path="/qr-scanner" element={<QRScannerPage />}></Route>
               <Route path="/admin-login" element={<AdminLoginPage />}></Route>
               <Route path="/booking" element={<BookingPage />}></Route>
+              <Route path="/booking/visual" element={<VisualBookingPage />}></Route>
+              <Route path="/booking/services" element={<ServiceSelectionPage />}></Route>
               <Route path="/booking-summary" element={<BookingSummaryPage />}></Route>
               <Route path="/notifications" element={<NotificationListPage />}></Route>
               <Route path="/search" element={<SearchAdvancedPage />}></Route>

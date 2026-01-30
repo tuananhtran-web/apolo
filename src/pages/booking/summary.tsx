@@ -1,25 +1,50 @@
-import React from "react";
-import { Page, Header, Box, Text, Button, Icon, useNavigate, useLocation } from "zmp-ui";
+import React, { useMemo } from "react";
+import { Page, Header, Box, Text, Button, Icon, useNavigate, useLocation, Input } from "zmp-ui";
 
 interface BookingSummaryState {
   clubName: string;
-  date: string;
-  slots: { court: string; time: string; price: number }[];
+  date: Date | string;
+  slots: { id: string; court: string; time: string; price: number }[];
   mode: string;
   total: number;
+  services?: Record<number, number>;
 }
+
+const SERVICES_LIST = [
+  { id: 1, name: "Monster (Lon)", price: 30000 },
+  { id: 2, name: "Nước suối (Chai)", price: 10000 },
+  { id: 3, name: "Nước suối lớn (Chai)", price: 20000 },
+  { id: 4, name: "Pocari (chai)", price: 20000 },
+  { id: 5, name: "Pocari Lớn (chai)", price: 35000 },
+  { id: 6, name: "Thuê vợt", price: 50000 },
+];
 
 const BookingSummaryPage: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const state = (location.state as any)?.summary as BookingSummaryState | undefined;
+  const state = (location.state as any) || {};
+  const bookingState = state.summary ? state.summary : state; // Handle nested or flat state
 
-  if (!state) {
-    navigate(-1);
-    return null;
+  if (!bookingState || !bookingState.slots) {
+    // navigate(-1); // Commented out for dev safety
+    return <Page><Text>Không có thông tin đặt lịch</Text></Page>;
   }
 
-  const { clubName, date, slots, mode, total } = state;
+  const { clubName, date, slots, mode, total: slotTotal, services } = bookingState;
+
+  // Format date
+  const displayDate = typeof date === 'string' ? date : new Date(date).toLocaleDateString('vi-VN');
+
+  // Calculate service total
+  const serviceTotal = useMemo(() => {
+    if (!services) return 0;
+    return Object.entries(services).reduce((sum, [id, qty]) => {
+      const item = SERVICES_LIST.find(s => s.id === Number(id));
+      return sum + (item ? item.price * (qty as number) : 0);
+    }, 0);
+  }, [services]);
+
+  const grandTotal = slotTotal + serviceTotal;
 
   const title =
     mode === "daily"
@@ -31,108 +56,122 @@ const BookingSummaryPage: React.FC = () => {
       : "Đặt lịch sự kiện";
 
   return (
-    <Page className="bg-[#004f3a] min-h-full pb-24">
-      <Header title={title} className="bg-[#004f3a] text-white" textColor="white" />
+    <Page className="bg-[#15225a] min-h-full pb-32">
+      <Header title={title} className="bg-[#15225a] text-white" textColor="white" />
 
       <Box className="p-4 space-y-4">
-        <div className="bg-[#0b5f43] rounded-2xl p-4 text-white">
+        {/* Club Info */}
+        <div className="bg-[#1a2b70] rounded-2xl p-4 text-white">
           <div className="flex items-center gap-2 mb-2">
-            <Icon icon="zi-info-circle" />
-            <Text className="font-bold">Thông tin sân</Text>
+            <Icon icon="zi-location" className="text-[#d32829]" />
+            <Text className="font-bold text-[#d32829]">Thông tin sân</Text>
           </div>
-          <Text className="text-sm font-medium mb-1">Tên CLB: {clubName}</Text>
+          <Text className="font-medium mb-1">Tên CLB: {clubName}</Text>
           <Text size="xSmall" className="opacity-80">
-            Ngày chơi: {date}
+            Địa chỉ: Số 16, ngách 4A/4, Đặng Văn Ngữ, Đống Đa, Hà Nội
           </Text>
         </div>
 
-        <div className="bg-[#0b5f43] rounded-2xl p-4 text-white space-y-2">
+        {/* Booking Info */}
+        <div className="bg-[#1a2b70] rounded-2xl p-4 text-white space-y-2">
           <div className="flex items-center gap-2 mb-2">
-            <Icon icon="zi-calendar" />
-            <Text className="font-bold">Thông tin lịch đặt</Text>
+            <Icon icon="zi-calendar" className="text-[#d32829]" />
+            <Text className="font-bold text-[#d32829]">Thông tin lịch đặt</Text>
           </div>
-          {slots.map((slot, index) => (
-            <div key={index} className="flex justify-between text-sm">
-              <Text>
-                {slot.court} | {slot.time}
-              </Text>
-              <Text>{slot.price.toLocaleString("vi-VN")}đ</Text>
+          <Text className="text-sm">Ngày: {displayDate}</Text>
+          
+          <div className="space-y-1">
+            {slots.map((slot: any, index: number) => (
+              <div key={index} className="text-sm text-yellow-100">
+                - {slot.court}: {slot.time} | {slot.price.toLocaleString("vi-VN")} đ
+              </div>
+            ))}
+          </div>
+
+          <div className="mt-2 text-sm pt-2 border-t border-white/10">
+            <Text>Đối tượng: Bảng giá theo ngày-tháng sân 1 & 3</Text>
+            <Text className="mt-1">
+              Tổng giờ: <span className="font-bold">{slots.length}h00</span>
+            </Text>
+            <Text className="mt-1">
+              Tổng tiền: <span className="font-bold">{slotTotal.toLocaleString("vi-VN")} đ</span>
+            </Text>
+          </div>
+          
+          {/* Services Display */}
+          {services && Object.keys(services).length > 0 && (
+            <div className="mt-2 pt-2 border-t border-white/10">
+               <Text className="font-bold text-yellow-400 mb-1">Dịch vụ đã chọn:</Text>
+               {Object.entries(services).map(([id, qty]) => {
+                 const item = SERVICES_LIST.find(s => s.id === Number(id));
+                 if (!item) return null;
+                 return (
+                   <div key={id} className="flex justify-between text-sm text-yellow-100">
+                     <span>{item.name} (x{qty})</span>
+                     <span>{(item.price * (qty as number)).toLocaleString('vi-VN')} đ</span>
+                   </div>
+                 );
+               })}
             </div>
-          ))}
-          <div className="mt-2 text-sm">
-            <Text>Đối tượng: KHÁCH HÀNG BÌNH THƯỜNG</Text>
-            <Text>
-              Tổng giờ: <Text className="font-bold">{slots.length}h00</Text>
-            </Text>
-          </div>
+          )}
         </div>
 
-        <div className="bg-[#0b5f43] rounded-2xl p-4 text-white space-y-3">
-          <Text className="font-bold">Thanh toán</Text>
-          <div className="flex gap-2">
-            <Button
-              className="flex-1 bg-yellow-500 text-black font-bold"
-              size="small"
-              onClick={() => navigate("/login")}
-            >
-              ĐĂNG NHẬP
-            </Button>
-            <Button
-              className="flex-1 bg-white text-[#0E6F4E] font-bold"
-              size="small"
-              onClick={() => navigate("/register")}
-            >
-              ĐĂNG KÝ
-            </Button>
-          </div>
-          <div className="mt-2">
-            <Text size="small">Số tiền cần thanh toán</Text>
-            <Text.Title className="text-yellow-300">
-              {total.toLocaleString("vi-VN")}đ
-            </Text.Title>
-          </div>
-        </div>
+        {/* Add Service Button */}
+        <Button 
+          variant="secondary" 
+          fullWidth 
+          className="border border-white/30 bg-transparent text-white hover:bg-white/10"
+          onClick={() => navigate("/booking/services", { state: bookingState })}
+        >
+          Thêm dịch vụ
+        </Button>
 
-        <div className="bg-[#0b5f43] rounded-2xl p-4 text-white space-y-3">
-          <Text className="font-bold">Thông tin người đặt</Text>
+        {/* User Inputs */}
+        <div className="space-y-3">
           <div>
-            <Text size="xSmall" className="mb-1 block">
-              Tên của bạn
-            </Text>
-            <input
-              className="w-full rounded-lg px-3 py-2 text-sm text-black"
-              placeholder="Nhập tên của bạn"
+            <Text className="font-bold text-white mb-1 uppercase text-sm">TÊN CỦA BẠN</Text>
+            <Input 
+              placeholder="Nhập tên của bạn" 
+              className="bg-white rounded-lg border-none"
             />
           </div>
+          
           <div>
-            <Text size="xSmall" className="mb-1 block">
-              Số điện thoại
-            </Text>
-            <div className="flex items-center border rounded-lg bg-white">
-              <div className="flex items-center px-2 border-r">
-                <img
-                  src="https://upload.wikimedia.org/wikipedia/commons/2/21/Flag_of_Vietnam.svg"
-                  alt="VN"
-                  className="w-4 h-4 mr-1"
-                />
-                <Text size="xSmall" className="text-gray-700">
-                  +84
-                </Text>
-              </div>
-              <input
-                className="flex-1 px-2 py-2 text-sm outline-none"
-                placeholder="Nhập số điện thoại"
-              />
+            <Text className="font-bold text-white mb-1 uppercase text-sm">SỐ ĐIỆN THOẠI</Text>
+            <div className="flex bg-white rounded-lg overflow-hidden">
+               <div className="flex items-center px-3 bg-gray-100 border-r">
+                 <div className="w-5 h-5 rounded-full bg-red-600 flex items-center justify-center text-white text-[8px] mr-1">★</div>
+                 <span className="text-sm font-bold">+ 84</span>
+                 <Icon icon="zi-chevron-down" size={12} className="ml-1" />
+               </div>
+               <input 
+                 className="flex-1 p-3 outline-none text-sm"
+                 placeholder="Nhập số điện thoại"
+                 type="tel"
+               />
             </div>
+          </div>
+          
+          <div>
+            <Text className="font-bold text-white mb-1 uppercase text-sm">GHI CHÚ CHO CHỦ SÂN</Text>
+            <Input.TextArea 
+              placeholder="Nhập ghi chú" 
+              className="bg-white rounded-lg border-none"
+              rows={3}
+            />
           </div>
         </div>
       </Box>
 
-      <div className="fixed bottom-0 left-0 right-0 p-4 bg-[#004f3a]">
-        <Button
-          fullWidth
-          className="bg-yellow-500 text-black font-bold rounded-lg py-3"
-          onClick={() => navigate(-1)}
+      {/* Footer */}
+      <div className="fixed bottom-0 left-0 right-0 p-4 bg-[#1a2b70] z-50">
+        <Button 
+          fullWidth 
+          className="bg-[#d32829] text-white font-bold rounded-lg h-12 text-lg shadow-lg"
+          onClick={() => {
+             // Handle payment confirmation
+             navigate("/");
+          }}
         >
           XÁC NHẬN & THANH TOÁN
         </Button>
@@ -142,4 +181,3 @@ const BookingSummaryPage: React.FC = () => {
 };
 
 export default BookingSummaryPage;
-

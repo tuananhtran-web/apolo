@@ -86,7 +86,7 @@ export const ClubDetailSheet: React.FC<ClubDetailSheetProps> = ({ club, visible,
                className="w-8 h-8 rounded-full bg-white/80 flex items-center justify-center cursor-pointer active:scale-90 transition-transform"
                onClick={() => handleAction("Yêu thích")}
              >
-               <Icon icon="zi-heart" className="text-red-500" />
+               <Icon icon="zi-heart" className="text-[#d32829]" />
              </div>
              <div 
                className="w-8 h-8 rounded-full bg-white/80 flex items-center justify-center cursor-pointer active:scale-90 transition-transform"
@@ -121,15 +121,15 @@ export const ClubDetailSheet: React.FC<ClubDetailSheetProps> = ({ club, visible,
               <div className="flex gap-4 mt-4 border-t pt-4">
                  <div className="flex-1 text-center border-r">
                     <Text size="xSmall" className="text-gray-500">Khoảng cách</Text>
-                    <Text className="font-bold text-[#0E6F4E]">{club.distance}</Text>
+                    <Text className="font-bold text-[#283b91]">{club.distance}</Text>
                  </div>
                  <div className="flex-1 text-center border-r">
                     <Text size="xSmall" className="text-gray-500">Giờ mở cửa</Text>
-                    <Text className="font-bold text-[#0E6F4E]">{club.openTime}</Text>
+                    <Text className="font-bold text-[#283b91]">{club.openTime}</Text>
                  </div>
                  <div className="flex-1 text-center">
                     <Text size="xSmall" className="text-gray-500">Giá tham khảo</Text>
-                    <Text className="font-bold text-[#0E6F4E]">{club.priceRange ? club.priceRange.split('-')[0] : 'Liên hệ'}</Text>
+                    <Text className="font-bold text-[#283b91]">{club.priceRange ? club.priceRange.split('-')[0] : 'Liên hệ'}</Text>
                  </div>
               </div>
            </div>
@@ -148,7 +148,7 @@ export const ClubDetailSheet: React.FC<ClubDetailSheetProps> = ({ club, visible,
                     key={tab.id}
                     className={`flex-1 py-3 text-center font-bold text-[11px] cursor-pointer transition-colors ${
                       activeTab === tab.id
-                        ? "text-[#0E6F4E] border-b-2 border-[#0E6F4E]"
+                        ? "text-[#283b91] border-b-2 border-[#283b91]"
                         : "text-gray-500"
                     }`}
                     onClick={() => setActiveTab(tab.id)}
@@ -169,7 +169,7 @@ export const ClubDetailSheet: React.FC<ClubDetailSheetProps> = ({ club, visible,
                                 return (
                                    <div 
                                      key={idx} 
-                                     className={`min-w-[60px] h-16 rounded-lg border flex flex-col items-center justify-center cursor-pointer transition-all ${isSelected ? 'bg-[#0E6F4E] text-white border-[#0E6F4E] shadow-md' : 'bg-white border-gray-200'}`}
+                                     className={`min-w-[60px] h-16 rounded-lg border flex flex-col items-center justify-center cursor-pointer transition-all ${isSelected ? 'bg-[#283b91] text-white border-[#283b91] shadow-md' : 'bg-white border-gray-200'}`}
                                      onClick={() => setSelectedDateIndex(idx)}
                                    >
                                       <span className="text-xs font-medium">{date.getDate()}/{date.getMonth() + 1}</span>
@@ -188,15 +188,15 @@ export const ClubDetailSheet: React.FC<ClubDetailSheetProps> = ({ club, visible,
                                return (
                                 <div 
                                   key={san} 
-                                  className={`border rounded-lg p-3 cursor-pointer transition-all ${isSelected ? 'border-[#0E6F4E] bg-green-50 shadow-sm' : 'border-gray-200 bg-white'}`}
+                                  className={`border rounded-lg p-3 cursor-pointer transition-all ${isSelected ? 'border-[#283b91] bg-blue-50 shadow-sm' : 'border-gray-200 bg-white'}`}
                                   onClick={() => toggleCourt(san)}
                                 >
                                    <div className="flex justify-between items-center mb-2">
-                                      <Text className={`font-bold ${isSelected ? 'text-[#0E6F4E]' : 'text-gray-800'}`}>Sân {san}</Text>
-                                      {isSelected && <Icon icon="zi-check-circle-solid" className="text-[#0E6F4E]" />}
+                                      <Text className={`font-bold ${isSelected ? 'text-[#283b91]' : 'text-gray-800'}`}>Sân {san}</Text>
+                                      {isSelected && <Icon icon="zi-check-circle-solid" className="text-[#283b91]" />}
                                    </div>
                                    <div className="text-xs text-gray-500">05:00 - 17:00</div>
-                                   <div className="text-xs font-bold text-[#0E6F4E] mt-1">50.000đ/giờ</div>
+                                   <div className="text-xs font-bold text-[#283b91] mt-1">50.000đ/giờ</div>
                                 </div>
                                );
                              })}
@@ -299,10 +299,10 @@ export const ClubDetailSheet: React.FC<ClubDetailSheetProps> = ({ club, visible,
         <div className="absolute bottom-0 left-0 right-0 p-4 bg-white border-t shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.1)] flex items-center gap-3 z-50">
            <div className="flex-1">
               <Text size="xSmall" className="text-gray-500">Tổng tạm tính</Text>
-              <Text.Title className="text-[#0E6F4E]">{new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(calculateTotal())}</Text.Title>
+              <Text.Title className="text-[#283b91]">{new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(calculateTotal())}</Text.Title>
            </div>
            <Button 
-             className={`flex-1 rounded-lg ${selectedCourts.length === 0 ? 'bg-gray-300' : 'bg-[#0E6F4E]'}`} 
+             className={`flex-1 rounded-lg ${selectedCourts.length === 0 ? 'bg-gray-300' : 'bg-[#283b91]'}`} 
              disabled={selectedCourts.length === 0}
              onClick={handleBooking}
            >
@@ -319,7 +319,7 @@ export const ClubDetailSheet: React.FC<ClubDetailSheetProps> = ({ club, visible,
         >
           <div className="space-y-3 py-2">
             <div
-              className="rounded-xl bg-[#e7ffec] px-4 py-3 flex items-center justify-between cursor-pointer"
+              className="rounded-xl bg-[#eef2ff] px-4 py-3 flex items-center justify-between cursor-pointer"
               onClick={() => {
                 setShowBookingType(false);
                 onClose();
@@ -329,12 +329,12 @@ export const ClubDetailSheet: React.FC<ClubDetailSheetProps> = ({ club, visible,
               }}
             >
               <div>
-                <Text.Title className="text-[#0E6F4E] text-sm">Đặt lịch theo ngày</Text.Title>
+                <Text.Title className="text-[#283b91] text-sm">Đặt lịch theo ngày</Text.Title>
                 <Text size="xSmall" className="text-gray-600">
                   Đặt nhanh khi khách chỉ chơi 1 khung giờ, có thể trên nhiều sân.
                 </Text>
               </div>
-              <Icon icon="zi-chevron-right" className="text-[#0E6F4E]" />
+              <Icon icon="zi-chevron-right" className="text-[#283b91]" />
             </div>
 
             <div

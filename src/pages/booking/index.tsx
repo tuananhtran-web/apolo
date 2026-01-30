@@ -90,12 +90,12 @@ const BookingPage: React.FC = () => {
       : "Đặt lịch sự kiện";
 
   return (
-    <Page className="bg-[#004f3a] pb-24 min-h-full">
-      <Header title={headerTitle} className="bg-[#004f3a] text-white" textColor="white" />
+    <Page className="bg-[#1a2b70] pb-24 min-h-full">
+      <Header title={headerTitle} className="bg-[#1a2b70] text-white" textColor="white" />
       
       <Box className="p-4">
         <div className="bg-white rounded-2xl p-4 mb-4 shadow-md">
-          <Text.Title className="mb-1 text-[#0E6F4E]">{clubName}</Text.Title>
+          <Text.Title className="mb-1 text-[#283b91]">{clubName}</Text.Title>
           <Text size="xSmall" className="text-gray-500">
             Chọn thời gian và khung giờ phù hợp để đặt sân.
           </Text>
@@ -173,8 +173,8 @@ const BookingPage: React.FC = () => {
                       ${slot.isBooked 
                         ? 'bg-gray-100 text-gray-400 cursor-not-allowed border-transparent' 
                         : isSelected
-                          ? 'bg-[#00b050] text-white border-[#00b050] shadow-md transform scale-105'
-                          : 'bg-[#00412f] text-white border-gray-500 hover:border-[#00b050] cursor-pointer'
+                          ? 'bg-[#283b91] text-white border-[#283b91] shadow-md transform scale-105'
+                          : 'bg-[#1a2b70] text-white border-gray-500 hover:border-[#283b91] cursor-pointer'
                       }
                     `}
                   >
@@ -192,10 +192,10 @@ const BookingPage: React.FC = () => {
         {/* Legend */}
         <div className="flex gap-4 justify-center text-xs text-gray-100 mb-8">
           <div className="flex items-center gap-1">
-            <div className="w-3 h-3 rounded bg-[#00412f] border border-gray-400"></div> Trống
+            <div className="w-3 h-3 rounded bg-[#1a2b70] border border-gray-400"></div> Trống
           </div>
           <div className="flex items-center gap-1">
-            <div className="w-3 h-3 rounded bg-[#00b050]"></div> Đang chọn
+            <div className="w-3 h-3 rounded bg-[#283b91]"></div> Đang chọn
           </div>
           <div className="flex items-center gap-1">
             <div className="w-3 h-3 rounded bg-gray-200"></div> Đã đặt
