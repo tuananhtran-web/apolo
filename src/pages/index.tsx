@@ -25,6 +25,8 @@ const HomePage: React.FC = () => {
 
   const [selectedClub, setSelectedClub] = useState<Club | null>(null);
   const [isSheetVisible, setIsSheetVisible] = useState(false);
+  const [isBookingModalVisible, setIsBookingModalVisible] = useState(false);
+  const [bookingClub, setBookingClub] = useState<string>("");
 
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
 
@@ -45,6 +47,11 @@ const HomePage: React.FC = () => {
   const handleClubClick = (club: Club) => {
     setSelectedClub(club);
     setIsSheetVisible(true);
+  };
+
+  const handleBookClick = (club: Club) => {
+    setBookingClub(club.name);
+    setIsBookingModalVisible(true);
   };
 
   const handleCategoryClick = (id: string) => {

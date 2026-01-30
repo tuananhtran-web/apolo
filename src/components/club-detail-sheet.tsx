@@ -159,48 +159,43 @@ export const ClubDetailSheet: React.FC<ClubDetailSheetProps> = ({ club, visible,
               </div>
 
               <div className="p-4">
+                 {/* Info Tab - Simplified */}
                  {activeTab === 'booking' ? (
                     <div className="space-y-4">
-                       <div>
-                          <Text.Title size="small" className="mb-2">Chọn ngày</Text.Title>
-                          <div className="flex gap-2 overflow-x-auto pb-2 no-scrollbar">
-                             {dates.map((date, idx) => {
-                                const isSelected = idx === selectedDateIndex;
-                                return (
-                                   <div 
-                                     key={idx} 
-                                     className={`min-w-[60px] h-16 rounded-lg border flex flex-col items-center justify-center cursor-pointer transition-all ${isSelected ? 'bg-[#283b91] text-white border-[#283b91] shadow-md' : 'bg-white border-gray-200'}`}
-                                     onClick={() => setSelectedDateIndex(idx)}
-                                   >
-                                      <span className="text-xs font-medium">{date.getDate()}/{date.getMonth() + 1}</span>
-                                      <span className="text-xs font-bold">{idx === 0 ? 'Hôm nay' : `T${date.getDay() + 1}`}</span>
-                                   </div>
-                                );
-                             })}
+                       <div className="bg-blue-50 p-4 rounded-xl border border-blue-100">
+                          <Text.Title size="small" className="mb-2 text-[#283b91]">Giới thiệu sân</Text.Title>
+                          <Text size="small" className="text-gray-600 mb-2">
+                            {club.name} là một trong những sân cầu lông hiện đại và tiện nghi nhất tại khu vực. 
+                            Chúng tôi cung cấp hệ thống sân thảm tiêu chuẩn thi đấu, hệ thống chiếu sáng chống lóa và không gian thoáng mát.
+                          </Text>
+                          <div className="space-y-1 mt-3">
+                             <div className="flex items-center gap-2 text-sm text-gray-700">
+                                <Icon icon="zi-check-circle" className="text-green-500" size={16} />
+                                <span>Thảm sân tiêu chuẩn BWF</span>
+                             </div>
+                             <div className="flex items-center gap-2 text-sm text-gray-700">
+                                <Icon icon="zi-check-circle" className="text-green-500" size={16} />
+                                <span>Hệ thống đèn LED chống lóa</span>
+                             </div>
+                             <div className="flex items-center gap-2 text-sm text-gray-700">
+                                <Icon icon="zi-check-circle" className="text-green-500" size={16} />
+                                <span>Khu vực chờ rộng rãi, thoáng mát</span>
+                             </div>
+                             <div className="flex items-center gap-2 text-sm text-gray-700">
+                                <Icon icon="zi-check-circle" className="text-green-500" size={16} />
+                                <span>Có quầy nước giải khát và dịch vụ thuê vợt</span>
+                             </div>
                           </div>
                        </div>
 
-                       <div>
-                          <Text.Title size="small" className="mb-2">Chọn sân trống (Giờ vàng)</Text.Title>
-                          <div className="grid grid-cols-2 gap-3">
-                             {[1, 2, 3, 4, 5, 6].map(san => {
-                               const isSelected = selectedCourts.includes(san);
-                               return (
-                                <div 
-                                  key={san} 
-                                  className={`border rounded-lg p-3 cursor-pointer transition-all ${isSelected ? 'border-[#283b91] bg-blue-50 shadow-sm' : 'border-gray-200 bg-white'}`}
-                                  onClick={() => toggleCourt(san)}
-                                >
-                                   <div className="flex justify-between items-center mb-2">
-                                      <Text className={`font-bold ${isSelected ? 'text-[#283b91]' : 'text-gray-800'}`}>Sân {san}</Text>
-                                      {isSelected && <Icon icon="zi-check-circle-solid" className="text-[#283b91]" />}
-                                   </div>
-                                   <div className="text-xs text-gray-500">05:00 - 17:00</div>
-                                   <div className="text-xs font-bold text-[#283b91] mt-1">50.000đ/giờ</div>
-                                </div>
-                               );
-                             })}
-                          </div>
+                       <div className="bg-yellow-50 p-4 rounded-xl border border-yellow-100">
+                          <Text.Title size="small" className="mb-2 text-yellow-700">Lưu ý từ chủ sân</Text.Title>
+                          <ul className="list-disc pl-5 text-sm text-gray-600 space-y-1">
+                             <li>Vui lòng mang giày đế cao su chuyên dụng để bảo vệ mặt sân.</li>
+                             <li>Không mang thức ăn vào khu vực sân đấu.</li>
+                             <li>Giữ gìn vệ sinh chung và tài sản của câu lạc bộ.</li>
+                             <li>Vui lòng đến trước giờ đặt 10 phút để làm thủ tục nhận sân.</li>
+                          </ul>
                        </div>
                     </div>
                  ) : activeTab === "services" ? (

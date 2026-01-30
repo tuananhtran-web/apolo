@@ -1,5 +1,5 @@
-import React, { useMemo } from "react";
-import { Page, Header, Box, Text, Button, Icon, useNavigate, useLocation, Input } from "zmp-ui";
+import React, { useMemo, useState } from "react";
+import { Page, Header, Box, Text, Button, Icon, useNavigate, useLocation, Input, Modal } from "zmp-ui";
 
 interface BookingSummaryState {
   clubName: string;
@@ -25,8 +25,11 @@ const BookingSummaryPage: React.FC = () => {
   const state = (location.state as any) || {};
   const bookingState = state.summary ? state.summary : state; // Handle nested or flat state
 
+  const [showPaymentModal, setShowPaymentModal] = useState(false);
+  const [userName, setUserName] = useState("");
+  const [userPhone, setUserPhone] = useState("");
+
   if (!bookingState || !bookingState.slots) {
-    // navigate(-1); // Commented out for dev safety
     return <Page><Text>Không có thông tin đặt lịch</Text></Page>;
   }
 
@@ -54,6 +57,18 @@ const BookingSummaryPage: React.FC = () => {
       : mode === "visual"
       ? "Đặt lịch ngày trực quan"
       : "Đặt lịch sự kiện";
+
+  const handlePaymentSelect = (method: 'cash' | 'transfer') => {
+    setShowPaymentModal(false);
+    navigate("/payment", {
+      state: {
+        booking: bookingState,
+        paymentMethod: method,
+        grandTotal,
+        userInfo: { name: userName, phone: userPhone }
+      }
+    });
+  };
 
   return (
     <Page className="bg-[#15225a] min-h-full pb-32">
@@ -133,6 +148,8 @@ const BookingSummaryPage: React.FC = () => {
             <Input 
               placeholder="Nhập tên của bạn" 
               className="bg-white rounded-lg border-none"
+              value={userName}
+              onChange={(e) => setUserName(e.target.value)}
             />
           </div>
           
@@ -148,6 +165,8 @@ const BookingSummaryPage: React.FC = () => {
                  className="flex-1 p-3 outline-none text-sm"
                  placeholder="Nhập số điện thoại"
                  type="tel"
+                 value={userPhone}
+                 onChange={(e) => setUserPhone(e.target.value)}
                />
             </div>
           </div>
@@ -168,14 +187,49 @@ const BookingSummaryPage: React.FC = () => {
         <Button 
           fullWidth 
           className="bg-[#d32829] text-white font-bold rounded-lg h-12 text-lg shadow-lg"
-          onClick={() => {
-             // Handle payment confirmation
-             navigate("/");
-          }}
+          onClick={() => setShowPaymentModal(true)}
         >
           XÁC NHẬN & THANH TOÁN
         </Button>
       </div>
+
+      {/* Payment Method Modal */}
+      <Modal
+        visible={showPaymentModal}
+        title="Chọn phương thức thanh toán"
+        onClose={() => setShowPaymentModal(false)}
+        actions={[]}
+      >
+        <div className="p-4 space-y-3">
+          <div 
+            className="flex items-center gap-3 p-3 rounded-xl border border-gray-200 bg-white shadow-sm active:bg-gray-50 cursor-pointer"
+            onClick={() => handlePaymentSelect('transfer')}
+          >
+             <div className="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center text-[#283b91]">
+                <Icon icon="zi-poll" />
+             </div>
+             <div>
+                <Text className="font-bold text-[#283b91]">Chuyển khoản ngân hàng</Text>
+                <Text size="xSmall" className="text-gray-500">Quét mã QR để thanh toán nhanh</Text>
+             </div>
+             <Icon icon="zi-chevron-right" className="ml-auto text-gray-400" />
+          </div>
+
+          <div 
+            className="flex items-center gap-3 p-3 rounded-xl border border-gray-200 bg-white shadow-sm active:bg-gray-50 cursor-pointer"
+            onClick={() => handlePaymentSelect('cash')}
+          >
+             <div className="w-10 h-10 rounded-full bg-green-100 flex items-center justify-center text-green-600">
+                <Icon icon="zi-user-solid" />
+             </div>
+             <div>
+                <Text className="font-bold text-green-700">Thanh toán tại quầy</Text>
+                <Text size="xSmall" className="text-gray-500">Thanh toán bằng tiền mặt khi đến sân</Text>
+             </div>
+             <Icon icon="zi-chevron-right" className="ml-auto text-gray-400" />
+          </div>
+        </div>
+      </Modal>
     </Page>
   );
 };

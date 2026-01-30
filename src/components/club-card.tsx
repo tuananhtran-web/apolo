@@ -5,14 +5,13 @@ import { Club } from '../mock/data';
 interface ClubCardProps {
   club: Club;
   onClick?: (club: Club) => void;
+  onBook?: (club: Club) => void;
 }
 
-export const ClubCard: React.FC<ClubCardProps> = ({ club, onClick }) => {
-  const navigate = useNavigate();
-
+export const ClubCard: React.FC<ClubCardProps> = ({ club, onClick, onBook }) => {
   return (
     <Box 
-      className="bg-white rounded-xl mb-4 overflow-hidden shadow-sm active:scale-95 transition-transform duration-200"
+      className="bg-white rounded-xl shadow-sm mb-3 overflow-hidden active:opacity-90 transition-opacity"
       onClick={() => onClick?.(club)}
     >
       {/* Image Header */}

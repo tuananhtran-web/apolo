@@ -47,6 +47,7 @@ const Layout = () => {
               <Route path="/booking/visual" element={<VisualBookingPage />}></Route>
               <Route path="/booking/services" element={<ServiceSelectionPage />}></Route>
               <Route path="/booking-summary" element={<BookingSummaryPage />}></Route>
+              <Route path="/payment" element={<PaymentPage />}></Route>
               <Route path="/notifications" element={<NotificationListPage />}></Route>
               <Route path="/search" element={<SearchAdvancedPage />}></Route>
             </AnimationRoutes>
