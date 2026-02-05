@@ -1,13 +1,4 @@
-import { db } from './firebase';
-import { 
-  collection, 
-  doc, 
-  getDocs, 
-  getDoc, 
-  updateDoc, 
-  deleteDoc, 
-  addDoc 
-} from 'firebase/firestore';
+import { supabase } from './supabase';
 
 export interface PackageCategory {
   id: string;
@@ -28,97 +19,153 @@ export interface Package {
   saleBadge?: string; // e.g. "50%"
 }
 
-const COLLECTION_NAME = 'packages';
+const TABLE_NAME = 'packages';
 
-// Mock Data
-const MOCK_CATEGORIES: PackageCategory[] = [
+// Fixed categories for now, or we can move to DB too.
+// For simplicity, let's keep categories static or fetch distinct from DB.
+// But better to have a static list or a simple mapping.
+const CATEGORIES: PackageCategory[] = [
   { id: 'gym', name: 'Gym' },
   { id: 'groupx', name: 'GroupX' },
   { id: 'yoga', name: 'Yoga' },
   { id: 'boxing', name: 'Boxing' }
 ];
 
-const MOCK_PACKAGES: Package[] = [
-  {
-    id: 'pkg1',
-    categoryId: 'gym',
-    name: 'Gói Gym 1 Tháng',
-    durationMonths: 1,
-    originalPrice: 500000,
-    currentPrice: 350000,
-    image: 'https://images.unsplash.com/photo-1534438327276-14e5300c3a48?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60',
-    saleBadge: '30%',
-    isHot: false
-  },
-  {
-    id: 'pkg2',
-    categoryId: 'gym',
-    name: 'Gói Gym 1 Năm (Siêu Tiết Kiệm)',
-    durationMonths: 12,
-    originalPrice: 6000000,
-    currentPrice: 3000000,
-    image: 'https://images.unsplash.com/photo-1581009146145-b5ef050c2e1e?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60',
-    banner: 'https://images.unsplash.com/photo-1599058945522-28d584b6f0ff?ixlib=rb-1.2.1&auto=format&fit=crop&w=1000&q=80',
-    saleBadge: '50%',
-    isHot: true,
-    description: 'Tặng thêm 2 tháng khi đăng ký ngay hôm nay'
-  },
-  {
-    id: 'pkg3',
-    categoryId: 'yoga',
-    name: 'Yoga Trị Liệu 3 Tháng',
-    durationMonths: 3,
-    originalPrice: 2000000,
-    currentPrice: 1800000,
-    image: 'https://images.unsplash.com/photo-1544367563-12123d8965cd?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60',
-    saleBadge: '10%'
-  }
-];
-
-// Helper to check mock mode
-const isMockMode = () => true;
-
-let mockPackages = [...MOCK_PACKAGES];
-
 export const PackageService = {
   getCategories: async (): Promise<PackageCategory[]> => {
-    return Promise.resolve(MOCK_CATEGORIES);
+    return Promise.resolve(CATEGORIES);
   },
 
   getAllPackages: async (): Promise<Package[]> => {
-    if (isMockMode()) {
-      return new Promise(resolve => setTimeout(() => resolve([...mockPackages]), 500));
+    const { data, error } = await supabase
+      .from(TABLE_NAME)
+      .select('*')
+      .order('created_at', { ascending: false });
+
+    if (error) {
+      console.error('Error fetching packages:', error);
+      return [];
     }
-    // Implement Firestore getDocs here
-    return [];
+
+    return (data || []).map((p: any) => ({
+      id: p.id,
+      categoryId: p.category_id,
+      name: p.name,
+      durationMonths: p.duration_months,
+      originalPrice: p.original_price,
+      currentPrice: p.current_price,
+      image: p.image,
+      banner: p.banner,
+      description: p.description,
+      isHot: p.is_hot,
+      saleBadge: p.sale_badge
+    }));
   },
 
   getPackageById: async (id: string): Promise<Package | null> => {
-    if (isMockMode()) {
-      return new Promise(resolve => setTimeout(() => resolve(mockPackages.find(p => p.id === id) || null), 300));
+    const { data, error } = await supabase
+      .from(TABLE_NAME)
+      .select('*')
+      .eq('id', id)
+      .single();
+
+    if (error || !data) {
+      console.error('Error fetching package by id:', error);
+      return null;
     }
-    return null;
+
+    const p = data;
+    return {
+      id: p.id,
+      categoryId: p.category_id,
+      name: p.name,
+      durationMonths: p.duration_months,
+      originalPrice: p.original_price,
+      currentPrice: p.current_price,
+      image: p.image,
+      banner: p.banner,
+      description: p.description,
+      isHot: p.is_hot,
+      saleBadge: p.sale_badge
+    };
   },
 
-  createPackage: async (pkg: Omit<Package, 'id'>): Promise<void> => {
-    if (isMockMode()) {
-      const newPkg = { ...pkg, id: Math.random().toString(36).substr(2, 9) };
-      mockPackages.push(newPkg);
-      return Promise.resolve();
+  createPackage: async (pkg: Omit<Package, 'id'>): Promise<Package | null> => {
+    const dbPkg = {
+      category_id: pkg.categoryId,
+      name: pkg.name,
+      duration_months: pkg.durationMonths,
+      original_price: pkg.originalPrice,
+      current_price: pkg.currentPrice,
+      image: pkg.image,
+      banner: pkg.banner,
+      description: pkg.description,
+      is_hot: pkg.isHot,
+      sale_badge: pkg.saleBadge
+    };
+
+    const { data, error } = await supabase
+      .from(TABLE_NAME)
+      .insert(dbPkg)
+      .select()
+      .single();
+
+    if (error || !data) {
+      console.error('Error creating package:', error);
+      return null;
     }
+
+    const p = data;
+    return {
+      id: p.id,
+      categoryId: p.category_id,
+      name: p.name,
+      durationMonths: p.duration_months,
+      originalPrice: p.original_price,
+      currentPrice: p.current_price,
+      image: p.image,
+      banner: p.banner,
+      description: p.description,
+      isHot: p.is_hot,
+      saleBadge: p.sale_badge
+    };
   },
 
-  updatePackage: async (id: string, data: Partial<Package>): Promise<void> => {
-    if (isMockMode()) {
-      mockPackages = mockPackages.map(p => p.id === id ? { ...p, ...data } : p);
-      return Promise.resolve();
+  updatePackage: async (id: string, pkg: Partial<Package>): Promise<boolean> => {
+    const dbPkg: any = {};
+    if (pkg.categoryId !== undefined) dbPkg.category_id = pkg.categoryId;
+    if (pkg.name !== undefined) dbPkg.name = pkg.name;
+    if (pkg.durationMonths !== undefined) dbPkg.duration_months = pkg.durationMonths;
+    if (pkg.originalPrice !== undefined) dbPkg.original_price = pkg.originalPrice;
+    if (pkg.currentPrice !== undefined) dbPkg.current_price = pkg.currentPrice;
+    if (pkg.image !== undefined) dbPkg.image = pkg.image;
+    if (pkg.banner !== undefined) dbPkg.banner = pkg.banner;
+    if (pkg.description !== undefined) dbPkg.description = pkg.description;
+    if (pkg.isHot !== undefined) dbPkg.is_hot = pkg.isHot;
+    if (pkg.saleBadge !== undefined) dbPkg.sale_badge = pkg.saleBadge;
+
+    const { error } = await supabase
+      .from(TABLE_NAME)
+      .update(dbPkg)
+      .eq('id', id);
+
+    if (error) {
+      console.error('Error updating package:', error);
+      return false;
     }
+    return true;
   },
 
-  deletePackage: async (id: string): Promise<void> => {
-    if (isMockMode()) {
-      mockPackages = mockPackages.filter(p => p.id !== id);
-      return Promise.resolve();
+  deletePackage: async (id: string): Promise<boolean> => {
+    const { error } = await supabase
+      .from(TABLE_NAME)
+      .delete()
+      .eq('id', id);
+
+    if (error) {
+      console.error('Error deleting package:', error);
+      return false;
     }
+    return true;
   }
 };

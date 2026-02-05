@@ -1,21 +1,25 @@
 import React, { useState, useRef } from "react";
-import { Page, Box, Text, Input, Button, Icon, Header, useNavigate, Tabs } from "zmp-ui";
+import { Page, Box, Text, Input, Button, Icon, Header, useNavigate, useSnackbar } from "zmp-ui";
+import { getUserInfo } from "zmp-sdk/apis";
+import { UserService } from "../services/user-service";
 
 const LoginPage: React.FC = () => {
   const navigate = useNavigate();
-  const [activeTab, setActiveTab] = useState("phone");
-  const [phoneNumber, setPhoneNumber] = useState("");
-  const [email, setEmail] = useState("");
+  const { openSnackbar } = useSnackbar();
+  const [phoneNumber, setPhoneNumber] = useState("0912345678");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   
+  const [loading, setLoading] = useState(false);
+
   // Hidden admin trigger logic
   const tapCountRef = useRef(0);
   const firstTapTimeRef = useRef(0);
   const RESET_TIME_MS = 10000;
   const REQUIRED_TAPS = 5;
 
-  const handleLoginTap = () => {
+  const handleLoginTap = async () => {
+    // Hidden Admin Logic
     const now = Date.now();
     if (tapCountRef.current > 0 && now - firstTapTimeRef.current > RESET_TIME_MS) {
       tapCountRef.current = 0;
@@ -37,7 +41,75 @@ const LoginPage: React.FC = () => {
 
     // Normal Login Logic
     if (tapCountRef.current < REQUIRED_TAPS) {
+        // Prevent multiple clicks while loading
+        if (loading) return;
+
+        if (!phoneNumber) {
+            openSnackbar({ text: "Vui lòng nhập số điện thoại", type: "error" });
+            return;
+        }
+        if (!password) {
+            openSnackbar({ text: "Vui lòng nhập mật khẩu", type: "error" });
+            return;
+        }
+
+        setLoading(true);
+        try {
+            const user = await UserService.login(phoneNumber, password);
+            
+            if (user) {
+                // Save to local storage for app state
+                localStorage.setItem("user", JSON.stringify(user));
+                openSnackbar({ text: "Đăng nhập thành công", type: "success" });
+                navigate("/");
+            } else {
+                openSnackbar({ text: "Số điện thoại hoặc mật khẩu không đúng", type: "error" });
+            }
+        } catch (error) {
+            console.error("Login error:", error);
+            openSnackbar({ text: "Đăng nhập thất bại. Vui lòng thử lại.", type: "error" });
+        } finally {
+            setLoading(false);
+        }
+    }
+  };
+
+  const handleZaloLogin = async () => {
+    try {
+      setLoading(true);
+      const { userInfo } = await getUserInfo({
+        avatarType: "normal",
+      });
+      
+      // Create or sync Zalo user
+      const zaloUser = {
+          id: `zalo-${userInfo.id}`,
+          displayName: userInfo.name,
+          phoneNumber: "", // Zalo might not provide phone without special permission
+          avatar: userInfo.avatar,
+          isLocked: false,
+          package: {
+              name: 'Thành viên Zalo',
+              expiryDate: Date.now() + 86400000 * 30,
+              status: 'active'
+          },
+          user_metadata: {
+              ...userInfo,
+              source: 'zalo'
+          }
+      };
+      
+      // Sync to Firestore
+      await UserService.syncUserToFirestore(zaloUser as any);
+      
+      localStorage.setItem("user", JSON.stringify(zaloUser));
+      openSnackbar({ text: `Xin chào, ${userInfo.name}!`, type: "success" });
       navigate("/");
+    } catch (error) {
+      console.error(error);
+      openSnackbar({ text: "Đăng nhập Zalo thất bại", type: "error" });
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -46,26 +118,9 @@ const LoginPage: React.FC = () => {
        <Header title="Đăng nhập" showBackIcon={true} textColor="white" className="bg-transparent shadow-none" />
        
        <div className="flex-1 bg-white rounded-t-[30px] mt-4 overflow-hidden flex flex-col">
-          {/* Tabs */}
-          <div className="flex border-b border-gray-100">
-             <div 
-               className={`flex-1 py-4 text-center font-bold text-sm cursor-pointer ${activeTab === 'phone' ? 'text-[#283b91] border-b-2 border-[#283b91]' : 'text-gray-400'}`}
-               onClick={() => setActiveTab('phone')}
-             >
-                Số điện thoại
-             </div>
-             <div 
-               className={`flex-1 py-4 text-center font-bold text-sm cursor-pointer ${activeTab === 'email' ? 'text-[#283b91] border-b-2 border-[#283b91]' : 'text-gray-400'}`}
-               onClick={() => setActiveTab('email')}
-             >
-                Email
-             </div>
-          </div>
-
           <div className="p-6 flex-1 overflow-y-auto">
              {/* Inputs */}
              <div className="space-y-4 mb-6">
-                {activeTab === 'phone' ? (
                   <div>
                     <Text.Title size="small" className="font-bold mb-2 text-[#1a2b70]">Số điện thoại của bạn?</Text.Title>
                     <div className="flex items-center border border-gray-200 rounded-lg p-1">
@@ -83,26 +138,13 @@ const LoginPage: React.FC = () => {
                       />
                     </div>
                   </div>
-                ) : (
-                  <div>
-                    <Text.Title size="small" className="font-bold mb-2 text-[#1a2b70]">Email của bạn?</Text.Title>
-                    <Input 
-                      type="text"
-                      placeholder="Nhập email của bạn"
-                      clearable
-                      className="border-gray-200"
-                      value={email}
-                      onChange={(e) => setEmail(e.target.value)}
-                    />
-                  </div>
-                )}
 
                 <div>
-                  <Text.Title size="small" className="font-bold mb-2 text-green-800">Mật khẩu (*)</Text.Title>
+                  <Text.Title size="small" className="font-bold mb-2 text-[#1a2b70]">Mật khẩu</Text.Title>
                   <div className="relative">
                     <Input 
                       type={showPassword ? "text" : "password"}
-                      placeholder="Nhập mật khẩu (*)"
+                      placeholder="Nhập mật khẩu"
                       className="border-gray-200"
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
@@ -121,10 +163,45 @@ const LoginPage: React.FC = () => {
              <Button 
                 fullWidth 
                 size="large"
-                className="bg-[#283b91] hover:bg-[#1a2b70] rounded-lg font-bold text-lg mb-4 shadow-lg"
+                className="bg-[#283b91] hover:bg-[#1a2b70] rounded-lg font-bold text-lg mb-2 shadow-lg"
                 onClick={handleLoginTap}
+                loading={loading}
              >
                 ĐĂNG NHẬP
+             </Button>
+             
+             {/* Admin Login Link */}
+             <div className="flex justify-center mb-4">
+                <div 
+                    onClick={() => navigate('/admin-login')}
+                    className="flex items-center gap-2 px-4 py-2 rounded-full bg-gray-100 hover:bg-gray-200 cursor-pointer transition-colors"
+                >
+                    <Icon icon="zi-user-settings" size={18} className="text-[#283b91]" />
+                    <Text className="text-sm font-medium text-[#283b91]">Đăng nhập quản trị viên</Text>
+                </div>
+             </div>
+
+             {/* Zalo Login Button */}
+             <Button 
+                fullWidth 
+                size="large"
+                className="bg-[#0068ff] hover:bg-[#0054cc] rounded-lg font-bold text-lg mb-4 shadow-lg flex items-center justify-center gap-2"
+                onClick={handleZaloLogin}
+             >
+                <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/9/91/Icon_of_Zalo.svg/1200px-Icon_of_Zalo.svg.png" className="w-6 h-6 rounded-full bg-white p-0.5" alt="Zalo" />
+                Đăng nhập bằng Zalo
+             </Button>
+
+             {/* QR Login Button */}
+             <Button 
+                fullWidth 
+                variant="secondary"
+                size="large"
+                className="border-[#283b91] text-[#283b91] bg-blue-50 hover:bg-blue-100 rounded-lg font-bold text-lg mb-4 shadow-sm flex items-center justify-center gap-2"
+                onClick={() => navigate("/qr-scanner")}
+             >
+                <Icon icon="zi-qrline" />
+                Quét mã QR đặt sân
              </Button>
 
              {/* FaceID Button */}
@@ -132,7 +209,7 @@ const LoginPage: React.FC = () => {
                className="border border-gray-200 rounded-lg py-3 flex items-center justify-center gap-2 cursor-pointer active:bg-blue-50 mb-6"
                onClick={() => console.log("Biometric login")}
              >
-                <Icon icon="zi-qrline" className="text-[#283b91]" />
+                <Icon icon="zi-unlock" className="text-[#283b91]" />
                 <Text className="font-bold text-[#283b91] text-sm">Đăng nhập với sinh trắc học</Text>
              </div>
 
@@ -147,18 +224,10 @@ const LoginPage: React.FC = () => {
                 <Text size="small" className="font-bold text-gray-700 cursor-pointer" onClick={() => navigate("/register")}>Đăng ký</Text>
              </div>
 
-             {/* Social Login */}
-             <div className="flex justify-center mb-6">
-                <div className="flex items-center gap-2 border border-gray-200 px-6 py-2 rounded-full shadow-sm cursor-pointer">
-                   <img src="https://upload.wikimedia.org/wikipedia/commons/5/53/Google_%22G%22_Logo.svg" alt="Google" className="w-5 h-5" />
-                   <Text className="font-medium text-gray-600">Google</Text>
-                </div>
-             </div>
-
              {/* Footer Partner Link */}
              <div className="bg-yellow-50 border border-yellow-200 rounded-xl p-4 mt-auto">
                 <Text size="small" className="text-center text-yellow-700">
-                  Nếu bạn là <span className="font-bold">CHỦ SÂN</span> hoặc <span className="font-bold">NHÂN VIÊN</span>, Bấm vào đây để tải ứng dụng <span className="font-bold">ALOBO - Quản lý sân thể thao!</span>
+                  Nếu bạn là <span className="font-bold">CHỦ SÂN</span> hoặc <span className="font-bold">NHÂN VIÊN</span>, Bấm vào đây để tải ứng dụng <span className="font-bold">VJD Sports</span>
                 </Text>
              </div>
           </div>

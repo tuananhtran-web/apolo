@@ -10,6 +10,11 @@
     "hideIOSSafeAreaBottom": true,
     "hideAndroidBottomNavigationBar": false
   },
+  "permissions": {
+    "scope.userInfo": {
+      "reason": "Sử dụng thông tin người dùng để đăng nhập và hiển thị trên ứng dụng"
+    }
+  },
   "listCSS": [],
   "listSyncJS": [],
   "listAsyncJS": []

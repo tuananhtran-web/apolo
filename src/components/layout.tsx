@@ -26,6 +26,19 @@ import BookingSummaryPage from "@/pages/booking/summary";
 import PaymentPage from "@/pages/payment/index";
 import NotificationListPage from "@/pages/notifications/index";
 import SearchAdvancedPage from "@/pages/search/index";
+import TestDBPage from "@/pages/test-db";
+
+// Admin Pages
+import AdminDashboard from "@/pages/admin/dashboard";
+import BookingManager from "@/pages/admin/booking-manager";
+import FacilityManager from "@/pages/admin/facility-manager";
+import UserListPage from "@/pages/admin/user-list";
+import UserDetailPage from "@/pages/admin/user-detail";
+import PackageListPage from "@/pages/admin/packages/list";
+import PackageEditPage from "@/pages/admin/packages/edit";
+import RevenuePage from "@/pages/admin/revenue/index";
+import SendNotificationPage from "@/pages/admin/notifications/send";
+import AdminSettingsPage from "@/pages/admin/settings/index";
 
 const Layout = () => {
   return (
@@ -40,6 +53,7 @@ const Layout = () => {
               <Route path="/pages/discovery" element={<DiscoveryPage />}></Route>
               <Route path="/pages/featured" element={<FeaturedPage />}></Route>
               <Route path="/pages/user/profile" element={<UserProfilePage />}></Route>
+              <Route path="/profile" element={<UserProfilePage />}></Route>
               <Route path="/login" element={<LoginPage />}></Route>
               <Route path="/register" element={<RegisterPage />}></Route>
               <Route path="/qr-scanner" element={<QRScannerPage />}></Route>
@@ -51,6 +65,21 @@ const Layout = () => {
               <Route path="/payment" element={<PaymentPage />}></Route>
               <Route path="/notifications" element={<NotificationListPage />}></Route>
               <Route path="/search" element={<SearchAdvancedPage />}></Route>
+              <Route path="/test-db" element={<TestDBPage />}></Route>
+
+              {/* Admin Routes */}
+              <Route path="/pages/admin/dashboard" element={<AdminDashboard />}></Route>
+              <Route path="/admin/dashboard" element={<AdminDashboard />}></Route>
+              <Route path="/pages/admin/booking-manager" element={<BookingManager />}></Route>
+              <Route path="/pages/admin/facility-manager" element={<FacilityManager />}></Route>
+              <Route path="/pages/admin/user-list" element={<UserListPage />}></Route>
+              <Route path="/pages/admin/user-detail" element={<UserDetailPage />}></Route>
+              <Route path="/pages/admin/packages/list" element={<PackageListPage />}></Route>
+              <Route path="/pages/admin/packages/edit" element={<PackageEditPage />}></Route>
+              <Route path="/pages/admin/revenue/index" element={<RevenuePage />}></Route>
+              <Route path="/pages/admin/notifications/send" element={<SendNotificationPage />}></Route>
+              <Route path="/pages/admin/settings/index" element={<AdminSettingsPage />}></Route>
+
             </AnimationRoutes>
           </div>
           <AppBottomNavigation />

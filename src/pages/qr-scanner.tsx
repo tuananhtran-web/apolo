@@ -37,10 +37,20 @@ const QRScannerPage: React.FC = () => {
   const handleScan = () => {
     // Simulate a successful scan
     setIsScanning(false);
-    // You would typically process the QR code data here
-    // For now, let's just go back or show a success message
-    alert("Quét mã thành công! (Demo)");
-    navigate(-1);
+    
+    // Simulate Login from QR
+    const user = {
+        id: "qr-user-01",
+        email: "qr-user@apolo.vn", 
+        user_metadata: {
+            full_name: "Khách QR",
+            avatar: ""
+        }
+    };
+    localStorage.setItem("user", JSON.stringify(user));
+    
+    // alert("Quét mã thành công! Đang đăng nhập...");
+    navigate("/");
   };
 
   return (

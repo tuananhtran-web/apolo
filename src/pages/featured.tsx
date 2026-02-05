@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { Page, Text, Icon, Button, Box, useNavigate, Modal } from "zmp-ui";
+import { featuredDeals } from "../mock/data";
 
 interface PromoCardProps {
   title: string;
@@ -49,7 +50,7 @@ const PromoCard: React.FC<PromoCardProps> = ({
         <div className="w-1/2 relative">
            {theme === 'swin' && (
              <>
-               <div className="absolute top-0 right-0 w-full h-full opacity-20 bg-[url('https://via.placeholder.com/200')] bg-cover"></div>
+               <div className="absolute top-0 right-0 w-full h-full opacity-20 bg-gradient-to-br from-blue-400 to-blue-600"></div>
                <div className="absolute top-2 right-2 bg-white/80 rounded-full p-1">
                   <Icon icon="zi-more-grid" className="text-blue-800" size={20} />
                </div>
@@ -99,77 +100,44 @@ const FeaturedPage: React.FC = () => {
         </Text.Title>
       </div>
 
-      <PromoCard 
-        title="PICKLEBALL" 
-        subtitle="QUẬN 10" 
-        promoText="10%" 
-        price="KHACH HÀNG THUÊ SÂN CỐ ĐỊNH"
-        phone="093 8344 218"
-        address="218A Đ. Thành Thái, Phường 15, Quận 10"
-        imageColor="bg-[#283b91]"
-        onBook={() => handleBook("SWIN Pickleball Quận 10")}
-      />
-      
-      <div className="mx-4 mb-4 rounded-2xl overflow-hidden shadow-lg relative h-48 bg-cover bg-center" 
-           style={{backgroundImage: 'url("https://media.istockphoto.com/id/1366580970/photo/pickleball-court.jpg?s=612x612&w=0&k=20&c=L4Q_X3f3s_W-t-Xq_R-Z-q-X-X-X-X-X-X-X-X-X-X-X")'}}>
-        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent"></div>
-        <div className="absolute bottom-0 left-0 right-0 p-4">
-           <Text className="text-white font-bold text-lg">SÂN TRUNG TÂM</Text>
-           <Text className="text-yellow-400 font-bold">DEAL SIÊU HOT CUỐI TUẦN</Text>
-           <div className="flex justify-between items-end mt-2">
-              <div className="bg-white/90 rounded-lg p-2 flex items-center gap-2">
-                 <div className="bg-red-500 text-white text-[10px] font-bold px-1 rounded">FREE</div>
-                 <div className="text-xs font-bold text-[#1a2b70]">BANH + VỢT</div>
-              </div>
-              <Button 
-                size="small" 
-                className="bg-yellow-500 text-white border-none font-bold"
-                onClick={() => handleBook("Sân Trung Tâm")}
-              >
-                ĐẶT LỊCH NGAY
-              </Button>
-           </div>
-        </div>
-      </div>
+      {featuredDeals.map((deal) => (
+        <PromoCard 
+          key={deal.id}
+          title={deal.title}
+          subtitle={deal.subtitle}
+          promoText={deal.promoText}
+          price={deal.price}
+          imageColor={deal.imageColor}
+          address={deal.address}
+          phone={deal.phone}
+          theme={deal.theme}
+          onBook={() => handleBook(deal.title)}
+        />
+      ))}
 
-      {/* Booking Type Modal */}
       <Modal
         visible={showBookingType}
         title="Chọn hình thức đặt"
         onClose={() => setShowBookingType(false)}
-        actions={[]}
+        verticalActions
+        actions={[
+          { text: "Đặt theo ngày", onClick: () => navigateToBooking('daily') },
+          { text: "Đặt lịch cố định", onClick: () => navigateToBooking('fixed') },
+          { text: "Xem lịch trực quan", highLight: true, onClick: () => navigateToBooking('visual') },
+          { text: "Đóng", onClick: () => setShowBookingType(false) },
+        ]}
       >
-        <div className="space-y-3 py-2">
-          <div
-            className="rounded-xl bg-[#eef2ff] px-4 py-3 flex items-center justify-between cursor-pointer border border-blue-100"
-            onClick={() => navigateToBooking('visual')}
-          >
-            <div>
-              <Text className="font-bold text-[#283b91]">Đặt lịch ngày trực quan</Text>
-              <Text size="xSmall" className="text-gray-500">
-                Đặt lịch ngày khi khách chơi nhiều khung giờ, nhiều sân.
-              </Text>
-            </div>
-            <Icon icon="zi-arrow-right" className="text-[#283b91]" />
-          </div>
-          
-          <div
-            className="rounded-xl bg-[#ffe7f2] px-4 py-3 flex items-center justify-between cursor-pointer border border-pink-100 relative"
-            onClick={() => navigateToBooking('event')}
-          >
-            <div>
-              <Text className="font-bold text-pink-600">Đặt lịch sự kiện</Text>
-              <Text size="xSmall" className="text-gray-500">
-                Sự kiện giúp bạn chơi chung với người có cùng niềm đam mê.
-              </Text>
-            </div>
-            <Icon icon="zi-arrow-right" className="text-pink-600" />
-            <div className="absolute top-2 right-2 bg-red-500 text-white text-[10px] font-bold px-1.5 py-0.5 rounded">
-              NEW
-            </div>
-          </div>
+        <div className="p-4 text-center">
+           Bạn muốn đặt lịch cho <b>{selectedClub}</b> theo hình thức nào?
         </div>
       </Modal>
+
+      <div className="fixed bottom-24 right-4 z-50">
+        <Button
+           icon={<Icon icon="zi-plus" size={24} />}
+           className="rounded-full w-12 h-12 shadow-lg bg-[#283b91] p-0 flex items-center justify-center"
+        />
+      </div>
     </Page>
   );
 };

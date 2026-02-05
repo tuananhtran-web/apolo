@@ -6,15 +6,76 @@ export const AppBottomNavigation: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const [activeTab, setActiveTab] = useState("home");
+  const isAdmin = location.pathname.includes('/admin');
 
   // Map path to active tab
   React.useEffect(() => {
-    if (location.pathname === '/') setActiveTab('home');
-    else if (location.pathname.includes('/map')) setActiveTab('map');
-    else if (location.pathname.includes('/discovery')) setActiveTab('discovery');
-    else if (location.pathname.includes('/featured')) setActiveTab('featured');
-    else if (location.pathname.includes('/profile') || location.pathname.includes('/user')) setActiveTab('profile');
-  }, [location.pathname]);
+    if (isAdmin) {
+       if (location.pathname.includes('/dashboard')) setActiveTab('dashboard');
+       else if (location.pathname.includes('/booking-manager')) setActiveTab('bookings');
+       else if (location.pathname.includes('/facility-manager')) setActiveTab('facilities');
+       else if (location.pathname.includes('/user-list')) setActiveTab('users');
+       else setActiveTab('dashboard');
+    } else {
+       if (location.pathname === '/') setActiveTab('home');
+       else if (location.pathname.includes('/map')) setActiveTab('map');
+       else if (location.pathname.includes('/discovery')) setActiveTab('discovery');
+       else if (location.pathname.includes('/featured')) setActiveTab('featured');
+       else if (location.pathname.includes('/profile') || location.pathname.includes('/user')) setActiveTab('profile');
+    }
+  }, [location.pathname, isAdmin]);
+
+  if (isAdmin) {
+    return (
+      <BottomNavigation
+        fixed
+        activeKey={activeTab}
+        onChange={(key) => {
+          setActiveTab(key);
+          switch (key) {
+            case "dashboard":
+              navigate("/pages/admin/dashboard");
+              break;
+            case "bookings":
+              navigate("/pages/admin/booking-manager");
+              break;
+            case "facilities":
+              navigate("/pages/admin/facility-manager");
+              break;
+            case "users":
+              navigate("/pages/admin/user-list");
+              break;
+          }
+        }}
+        className="z-50 pb-safe-bottom bg-white border-t border-gray-200"
+      >
+        <BottomNavigation.Item
+          key="dashboard"
+          label="Tổng quan"
+          icon={<Icon icon="zi-home" />}
+          activeIcon={<Icon icon="zi-home" className="text-[#006442]" />}
+        />
+        <BottomNavigation.Item
+          key="bookings"
+          label="Đặt sân"
+          icon={<Icon icon="zi-calendar" />}
+          activeIcon={<Icon icon="zi-calendar" className="text-[#006442]" />}
+        />
+        <BottomNavigation.Item
+          key="facilities"
+          label="Câu lạc bộ"
+          icon={<Icon icon="zi-location" />}
+          activeIcon={<Icon icon="zi-location" className="text-[#006442]" />}
+        />
+        <BottomNavigation.Item
+          key="users"
+          label="Người dùng"
+          icon={<Icon icon="zi-user-group" />}
+          activeIcon={<Icon icon="zi-user-group" className="text-[#006442]" />}
+        />
+      </BottomNavigation>
+    );
+  }
 
   return (
     <BottomNavigation

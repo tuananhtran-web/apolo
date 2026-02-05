@@ -297,11 +297,11 @@ export const ClubDetailSheet: React.FC<ClubDetailSheetProps> = ({ club, visible,
               <Text.Title className="text-[#283b91]">{new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(calculateTotal())}</Text.Title>
            </div>
            <Button 
-             className={`flex-1 rounded-lg ${selectedCourts.length === 0 ? 'bg-gray-300' : 'bg-[#283b91]'}`} 
-             disabled={selectedCourts.length === 0}
+             className={`flex-1 rounded-lg bg-[#283b91]`} 
              onClick={handleBooking}
+             disabled={false}
            >
-              ĐẶT LỊCH ({selectedCourts.length})
+              {selectedCourts.length === 0 ? "ĐẶT LỊCH NGAY" : `ĐẶT LỊCH (${selectedCourts.length})`}
            </Button>
         </div>
 

@@ -1,9 +1,10 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { Page, Text, Icon, useNavigate, useSnackbar } from "zmp-ui";
 import { ClubCard } from "../components/club-card";
-import { Club, clubs } from "../mock/data";
+import { ClubService, Club } from "../services/club-service";
 import { ClubDetailSheet } from "../components/club-detail-sheet";
 import { useLocation } from "react-router-dom";
+import { SystemSettingsService } from "../services/system-settings-service";
 
 const categories = [
   { id: "1", name: "Pickleball", icon: "zi-more-grid", color: "text-blue-500", bg: "bg-blue-50" },
@@ -29,6 +30,30 @@ const HomePage: React.FC = () => {
   const [bookingClub, setBookingClub] = useState<string>("");
 
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
+  const [currentUser, setCurrentUser] = useState<any>(null);
+  const [banners, setBanners] = useState<string[]>([]);
+  const [clubList, setClubList] = useState<Club[]>([]);
+
+  useEffect(() => {
+    const userStr = localStorage.getItem("user");
+    if (userStr) {
+      try {
+        setCurrentUser(JSON.parse(userStr));
+      } catch (e) {
+        console.error("Error parsing user", e);
+      }
+    }
+    
+    // Fetch banners
+    SystemSettingsService.getSettings().then(settings => {
+      if (settings.homeBanners && settings.homeBanners.length > 0) {
+        setBanners(settings.homeBanners);
+      }
+    });
+
+    // Fetch clubs
+    ClubService.getAllClubs().then(setClubList);
+  }, []);
 
   // Hidden admin login trigger
   const handleLogoClick = () => {
@@ -82,7 +107,7 @@ const HomePage: React.FC = () => {
 
   const advancedFilters = (location.state as any)?.advancedSearch;
 
-  const filteredClubs = clubs.filter(club => {
+  const filteredClubs = clubList.filter(club => {
     // 1. Search Keyword Filter
     if (searchKeyword) {
       const keyword = searchKeyword.toLowerCase();
@@ -165,23 +190,36 @@ const HomePage: React.FC = () => {
               </div>
               <div className="text-white">
                  <Text size="xSmall" className="opacity-90 font-bold">Total Club Management - VJD</Text>
-                 {/* Empty space for potential username or greeting */}
+                 {currentUser && (
+                    <Text size="small" className="font-bold text-yellow-300">Xin chào, {currentUser.user_metadata?.full_name || currentUser.email || "Bạn"}</Text>
+                 )}
               </div>
            </div>
-           <div className="flex gap-2">
-              <button 
-                className="bg-white text-[#283b91] font-bold text-xs py-1.5 px-4 rounded-lg shadow-md active:bg-gray-100 active:scale-95 transition-all duration-200"
-                onClick={() => navigate('/login')}
-              >
-                Đăng nhập
-              </button>
-              <button 
-                className="bg-transparent border border-white text-white font-bold text-xs py-1.5 px-4 rounded-lg active:bg-white/10 active:scale-95 transition-all duration-200"
-                onClick={() => navigate('/register')}
-              >
-                Đăng kí
-              </button>
-           </div>
+           {!currentUser ? (
+             <div className="flex gap-2">
+                <button 
+                  className="bg-white text-[#283b91] font-bold text-xs py-1.5 px-4 rounded-lg shadow-md active:bg-gray-100 active:scale-95 transition-all duration-200"
+                  onClick={() => navigate('/login')}
+                >
+                  Đăng nhập
+                </button>
+                <button 
+                  className="bg-transparent border border-white text-white font-bold text-xs py-1.5 px-4 rounded-lg active:bg-white/10 active:scale-95 transition-all duration-200"
+                  onClick={() => navigate('/register')}
+                >
+                  Đăng kí
+                </button>
+             </div>
+           ) : (
+             <div className="flex gap-2 items-center">
+                <div 
+                  className="w-8 h-8 rounded-full bg-white text-[#283b91] flex items-center justify-center font-bold cursor-pointer"
+                  onClick={() => navigate('/profile')}
+                >
+                  {currentUser.user_metadata?.full_name?.charAt(0) || "U"}
+                </div>
+             </div>
+           )}
         </div>
 
         {/* Search Bar */}
@@ -206,6 +244,19 @@ const HomePage: React.FC = () => {
              <Icon icon="zi-heart" />
           </div>
        </div>
+
+       {/* Banners */}
+       {banners.length > 0 && (
+         <div className="mb-6 px-1">
+            <div className="flex gap-4 overflow-x-auto no-scrollbar snap-x snap-mandatory rounded-2xl">
+              {banners.map((url, idx) => (
+                <div key={idx} className="min-w-full snap-center relative aspect-[2/1]">
+                  <img src={url} className="w-full h-full object-cover rounded-2xl shadow-md" alt="Banner" />
+                </div>
+              ))}
+            </div>
+         </div>
+       )}
 
        {/* Quick Filter Pills */}
        <div className="flex gap-2 overflow-x-auto no-scrollbar mb-6 pb-1">

@@ -3,6 +3,8 @@ import { Page, Icon, Text, Header, useNavigate } from 'zmp-ui';
 import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import L from 'leaflet';
+import { ClubDetailSheet } from '../components/club-detail-sheet';
+import { clubs, Club } from '../mock/data';
 
 // Fix for Leaflet default icon not showing
 delete (L.Icon.Default.prototype as any)._getIconUrl;
@@ -23,17 +25,22 @@ interface MapMarkerProps {
 const MapPage: React.FC = () => {
   const navigate = useNavigate();
   const [activeFilter, setActiveFilter] = useState('all');
+  const [selectedClub, setSelectedClub] = useState<Club | null>(null);
+  const [isSheetVisible, setIsSheetVisible] = useState(false);
 
   const markers: MapMarkerProps[] = [
-    { id: 1, lat: 10.762622, lng: 106.660172, name: 'CLB Cầu Lông Phú Mỹ', type: 'badminton' },
-    { id: 2, lat: 10.772622, lng: 106.670172, name: 'Sân Pickleball Quận 7', type: 'pickleball' },
-    { id: 3, lat: 10.752622, lng: 106.650172, name: 'Sân Bóng Đá K300', type: 'football' },
-    { id: 4, lat: 10.782622, lng: 106.680172, name: 'Sân Tennis Lan Anh', type: 'tennis' },
-    { id: 5, lat: 10.765622, lng: 106.655172, name: 'Sân Cầu Lông ABC', type: 'badminton' },
+    { id: 1, lat: 10.6865, lng: 106.7025, name: 'Sân Cầu Lông & Pickleballs B&B Đào Sư Tích', type: 'badminton' },
+    { id: 2, lat: 10.6880, lng: 106.7040, name: 'Nhà Bè Badminton Pickleball - Sân mái che', type: 'pickleball' },
+    { id: 3, lat: 10.7300, lng: 106.7250, name: 'CLB Cầu Lông Phú Mỹ', type: 'badminton' },
+    { id: 4, lat: 10.7450, lng: 106.7350, name: 'Trung tâm Thể thao Huỳnh Tấn Phát', type: 'football' },
+    { id: 5, lat: 10.7200, lng: 106.7100, name: 'Sân Tennis Hồ Thiên Nga', type: 'tennis' },
   ];
 
-  const handleBook = (clubName: string) => {
-    navigate("/booking", { state: { mode: "daily", clubName } });
+  const handleMarkerClick = (markerName: string) => {
+    // Find club in mock data by name, or use first one as fallback for demo
+    const club = clubs.find(c => c.name === markerName) || clubs[0];
+    setSelectedClub(club);
+    setIsSheetVisible(true);
   };
 
   return (
@@ -53,19 +60,13 @@ const MapPage: React.FC = () => {
           />
           
           {markers.map((marker) => (
-            <Marker key={marker.id} position={[marker.lat, marker.lng]}>
-              <Popup>
-                <div className="min-w-[150px]">
-                  <Text className="font-bold text-sm mb-1">{marker.name}</Text>
-                  <Text size="xSmall" className="text-gray-500 mb-2 capitalize">{marker.type}</Text>
-                  <button
-                    className="w-full bg-[#283b91] text-white text-xs py-1.5 rounded hover:bg-blue-800 transition-colors font-medium"
-                    onClick={() => handleBook(marker.name)}
-                  >
-                    ĐẶT LỊCH NGAY
-                  </button>
-                </div>
-              </Popup>
+            <Marker 
+              key={marker.id} 
+              position={[marker.lat, marker.lng]}
+              eventHandlers={{
+                click: () => handleMarkerClick(marker.name),
+              }}
+            >
             </Marker>
           ))}
         </MapContainer>
@@ -93,6 +94,12 @@ const MapPage: React.FC = () => {
            </div>
         </div>
       </div>
+
+      <ClubDetailSheet 
+        club={selectedClub}
+        visible={isSheetVisible}
+        onClose={() => setIsSheetVisible(false)}
+      />
     </Page>
   );
 };

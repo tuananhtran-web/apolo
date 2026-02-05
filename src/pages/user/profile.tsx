@@ -4,6 +4,18 @@ import { Page, Text, Icon, Button, Box, useNavigate, useSnackbar } from "zmp-ui"
 const UserProfilePage: React.FC = () => {
   const navigate = useNavigate();
   const { openSnackbar } = useSnackbar();
+  const [user, setUser] = React.useState<any>(null);
+
+  React.useEffect(() => {
+    const userStr = localStorage.getItem("user");
+    if (userStr) {
+      try {
+        setUser(JSON.parse(userStr));
+      } catch (e) {
+        console.error("Error parsing user", e);
+      }
+    }
+  }, []);
 
   const MenuItem = ({ icon, title, subtitle, onClick, isNew }: { icon: string, title: string, subtitle?: string, onClick?: () => void, isNew?: boolean }) => (
     <div 
@@ -24,10 +36,17 @@ const UserProfilePage: React.FC = () => {
     </div>
   );
 
+  const handleLogout = () => {
+    localStorage.removeItem("user");
+    setUser(null);
+    openSnackbar({ text: "Đã đăng xuất", type: "success" });
+    navigate("/login");
+  };
+
   return (
     <Page className="bg-gray-50 h-full pb-20">
       {/* Green Header Background */}
-      <div className="bg-green-600 h-40 relative">
+      <div className="bg-[#283b91] h-40 relative">
         {/* Decorative curves could go here */}
       </div>
 
@@ -36,36 +55,61 @@ const UserProfilePage: React.FC = () => {
         <div className="bg-white rounded-2xl p-5 shadow-lg flex flex-col gap-4">
           
           <div className="flex gap-4">
-            {/* Logo */}
-            <div className="w-16 h-16 rounded-full bg-green-800 flex items-center justify-center flex-shrink-0 border-4 border-green-50">
-               <Icon icon="zi-user-solid" className="text-green-400" size={32} />
-               {/* Simulating the 'A' logo */}
-               <div className="absolute font-black text-white text-3xl opacity-20">A</div>
+            {/* Logo or Avatar */}
+            <div className="w-16 h-16 rounded-full bg-gray-100 flex items-center justify-center flex-shrink-0 border-4 border-white overflow-hidden shadow-sm">
+               {user?.avatar || user?.user_metadata?.avatar ? (
+                 <img src={user?.avatar || user?.user_metadata?.avatar} alt="Avatar" className="w-full h-full object-cover" />
+               ) : (
+                 <>
+                   <Icon icon="zi-user-solid" className="text-gray-400" size={32} />
+                 </>
+               )}
             </div>
             
             {/* Text Content */}
             <div className="flex-1">
-               <Text.Title className="font-bold text-lg leading-tight mb-1">Total Club Management - VJD</Text.Title>
-               <Text className="text-yellow-500 text-sm font-medium">Tạo tài khoản để nhận nhiều ưu đãi hơn</Text>
+               {user ? (
+                 <>
+                   <Text.Title className="font-bold text-lg leading-tight mb-1">{user.displayName || user.user_metadata?.full_name || "Thành viên"}</Text.Title>
+                   <Text className="text-green-600 text-sm font-medium">{user.phoneNumber || user.user_metadata?.phone_number || "Thành viên thân thiết"}</Text>
+                 </>
+               ) : (
+                 <>
+                   <Text.Title className="font-bold text-lg leading-tight mb-1">Khách</Text.Title>
+                   <Text className="text-yellow-500 text-sm font-medium">Đăng nhập để nhận ưu đãi</Text>
+                 </>
+               )}
             </div>
           </div>
 
           {/* Buttons */}
-          <div className="flex gap-3 mt-1">
-             <Button 
-               className="flex-1 bg-green-600 hover:bg-green-700 active:bg-green-800 text-white font-bold rounded-lg py-2"
-               size="medium"
-               onClick={() => navigate('/login')}
-             >
-               Đăng nhập
-             </Button>
-             <button 
-               className="flex-1 bg-white border border-gray-300 text-gray-700 font-bold rounded-lg py-2 active:bg-gray-50 transition-colors"
-               onClick={() => navigate('/register')}
-             >
-               Đăng kí
-             </button>
-          </div>
+          {!user ? (
+            <div className="flex gap-3 mt-1">
+              <Button 
+                className="flex-1 bg-[#283b91] hover:bg-blue-800 text-white font-bold rounded-lg py-2"
+                size="medium"
+                onClick={() => navigate('/login')}
+              >
+                Đăng nhập
+              </Button>
+              <button 
+                className="flex-1 bg-white border border-gray-300 text-gray-700 font-bold rounded-lg py-2 active:bg-gray-50 transition-colors"
+                onClick={() => navigate('/register')}
+              >
+                Đăng kí
+              </button>
+            </div>
+          ) : (
+             <div className="mt-1 pt-3 border-t border-gray-100 flex justify-end">
+                <div 
+                   className="flex items-center gap-1 text-red-500 font-medium cursor-pointer"
+                   onClick={handleLogout}
+                >
+                   <Icon icon="zi-leave" size={18} />
+                   <Text>Đăng xuất</Text>
+                </div>
+             </div>
+          )}
 
         </div>
       </div>

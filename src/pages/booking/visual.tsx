@@ -70,7 +70,7 @@ const VisualBookingPage: React.FC = () => {
   };
 
   return (
-    <Page className="bg-white flex flex-col h-screen">
+    <Page className="bg-white flex flex-col h-[100dvh] pb-safe overflow-hidden">
       <Header title="Đặt lịch ngày trực quan" className="bg-[#283b91] text-white" textColor="white" />
 
       {/* Date Picker & Legend */}

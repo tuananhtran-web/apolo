@@ -54,20 +54,20 @@ const AdminPackageListPage: React.FC = () => {
         ) : (
           <div className="space-y-4">
             {packages.map((pkg) => (
-              <div key={pkg.id} className="relative group">
+              <div key={pkg.id} className="relative group" onClick={() => navigate('/pages/admin/packages/edit', { state: { pkg } })}>
                 <PackageCard pkg={pkg} isAdmin />
                 
                 {/* Admin Actions Overlay */}
                 <div className="absolute top-2 right-2 flex gap-2 z-20">
                   <div 
                     className="bg-white p-2 rounded-full shadow-md text-blue-600 cursor-pointer"
-                    onClick={() => navigate('/pages/admin/packages/edit', { state: { pkg } })}
+                    onClick={(e) => { e.stopPropagation(); navigate('/pages/admin/packages/edit', { state: { pkg } }); }}
                   >
                     <Icon icon="zi-edit" size={18} />
                   </div>
                   <div 
                     className="bg-white p-2 rounded-full shadow-md text-red-600 cursor-pointer"
-                    onClick={() => handleDelete(pkg.id)}
+                    onClick={(e) => { e.stopPropagation(); handleDelete(pkg.id); }}
                   >
                     <Icon icon="zi-delete" size={18} />
                   </div>

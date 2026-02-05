@@ -1,13 +1,15 @@
 import React, { useEffect, useState } from "react";
-import { Page, Header, Box, Text, Button, Icon, Modal, Input, useSnackbar, useNavigate } from "zmp-ui";
+import { Page, Header, Box, Text, Button, Icon, Modal, Input, useSnackbar, useNavigate, Tabs } from "zmp-ui";
 import { useLocation } from "react-router-dom";
 import { UserService, User } from "../../services/user-service";
+import { BookingService, Booking } from "../../services/booking-service";
 
 const UserDetailPage: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const { openSnackbar } = useSnackbar();
   const [user, setUser] = useState<User | null>(null);
+  const [bookings, setBookings] = useState<Booking[]>([]);
   const [loading, setLoading] = useState(true);
   const [bonusDays, setBonusDays] = useState("");
   const [showBonusModal, setShowBonusModal] = useState(false);
@@ -19,6 +21,7 @@ const UserDetailPage: React.FC = () => {
   useEffect(() => {
     if (userId) {
       loadUser(userId);
+      loadBookings(userId);
     }
   }, [userId]);
 
@@ -33,6 +36,15 @@ const UserDetailPage: React.FC = () => {
     } finally {
       setLoading(false);
     }
+  };
+
+  const loadBookings = async (id: string) => {
+      try {
+          const data = await BookingService.getUserBookings(id);
+          setBookings(data);
+      } catch (error) {
+          console.error("Error loading bookings", error);
+      }
   };
 
   const handleToggleLock = async () => {
@@ -200,6 +212,34 @@ const UserDetailPage: React.FC = () => {
           >
             Xóa người dùng vĩnh viễn
           </Button>
+        </div>
+      </Box>
+
+      <Box className="mt-4 bg-white p-4 pb-20">
+        <Text.Title size="small" className="font-bold mb-3">Lịch sử đặt sân ({bookings.length})</Text.Title>
+        <div className="space-y-3">
+            {bookings.length === 0 && (
+                <div className="text-center py-4 text-gray-500">Chưa có lịch sử đặt sân</div>
+            )}
+            {bookings.map((booking) => (
+                <div key={booking.id} className="border border-gray-100 rounded-lg p-3">
+                    <div className="flex justify-between mb-1">
+                        <span className="font-bold text-sm">{booking.date}</span>
+                        <span className={`text-xs font-bold px-2 py-0.5 rounded ${
+                            booking.status === 'confirmed' ? 'bg-green-100 text-green-700' :
+                            booking.status === 'cancelled' ? 'bg-red-100 text-red-700' : 'bg-yellow-100 text-yellow-700'
+                        }`}>
+                            {booking.status === 'confirmed' ? 'Đã duyệt' : booking.status === 'cancelled' ? 'Đã hủy' : 'Chờ duyệt'}
+                        </span>
+                    </div>
+                    <div className="text-xs text-gray-600 mb-1">
+                        Sân: {booking.courtId} | {booking.slots.length} slot(s)
+                    </div>
+                    <div className="text-sm font-bold text-[#006442]">
+                        {booking.totalPrice?.toLocaleString()}đ
+                    </div>
+                </div>
+            ))}
         </div>
       </Box>
 
